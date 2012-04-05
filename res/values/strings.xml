@@ -3,5 +3,8 @@
 
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">Facebook-friend-list-viewer</string>
+    <string name="login_button">Login to Facebook</string>
+    <string name="login_failed_text">Login to Facebook failed</string>
+    <string name="login_canceled_text">Canceled by user</string>
 
 </resources>
