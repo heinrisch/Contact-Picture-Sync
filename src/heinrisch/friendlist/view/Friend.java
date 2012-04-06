@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import android.graphics.Bitmap;
 
+
 public class Friend {
 	private String name;
 	private String profilePictureURL;

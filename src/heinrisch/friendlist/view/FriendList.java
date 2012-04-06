@@ -8,14 +8,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.android.Facebook;
@@ -23,10 +27,12 @@ import com.facebook.android.Facebook;
 public class FriendList extends Activity {
 
 	Facebook facebook = new Facebook("424405194241987");
-	
+
 	ProgressDialog dialog;
-	
+
 	ArrayList<Friend> friends;
+
+	FriendListAdapter friendListAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +55,15 @@ public class FriendList extends Activity {
 			Toast.makeText(this, "So far... not so good...", Toast.LENGTH_LONG).show();
 		}
 
-		
+
 		//Show dialog
 		dialog = ProgressDialog.show(FriendList.this, "", 
-	            "Getting your friends. Please wait...", true);
+				"Getting your friends. Please wait...", true);
 		dialog.setCancelable(false);
 		dialog.show();
 
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				//Get all friends with FQL
@@ -85,28 +91,53 @@ public class FriendList extends Activity {
 				} catch (JSONException e){
 					e.printStackTrace();
 				}
-				
-				/*
-				//TODO: make this async...
-				for(Friend f : friends){
-					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
-					Log.i("Downloaded image for:", (String) f.getName());
-					f.setProfilePic(b);
-				}*/
-				
+
 				downloadCompleteHandler.sendEmptyMessage(0);
 			}
 		}).start();
-		
+
 	}
-	
+
 	protected Handler downloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			FriendListAdapter adapter = new FriendListAdapter(FriendList.this, friends);
-			((ListView) findViewById(R.id.friend_list)).setAdapter(adapter);
+			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
+			((ListView) findViewById(R.id.friend_list)).setAdapter(friendListAdapter);
+
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					for(int i = 0; i < friends.size(); i++){
+						final Friend f = friends.get(i);
+						Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
+						Log.i("Downloaded image for:", (String) f.getName());
+						f.setProfilePic(b);
+						final int index = i;
+						runOnUiThread(new Runnable() {
+
+							@Override
+							public void run() {
+								ListView lv = (ListView) findViewById(R.id.friend_list);
+								View v = lv.getChildAt(index - lv.getFirstVisiblePosition());
+								if(v != null){
+									ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
+									if(f.hasDownloadedProfileImage()){
+										iv.setImageBitmap(f.getProfilePicture());
+									}
+								}
+							}
+						});
+					}
+
+				}
+			}).start();
+
+
 			dialog.cancel();
 
 		}
 	};
+
+
 }

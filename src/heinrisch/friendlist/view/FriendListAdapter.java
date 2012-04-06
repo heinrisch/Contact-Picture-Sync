@@ -72,6 +72,8 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		holder.name.setText(friend.getName());
 		if(friend.hasDownloadedProfileImage()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
+		}else{
+			holder.profilePicture.setImageResource(R.drawable.mr_unknown);
 		}
 
 
@@ -96,4 +98,5 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 	public Object[] getSections() {
 		return sections;
 	}
+
 }
