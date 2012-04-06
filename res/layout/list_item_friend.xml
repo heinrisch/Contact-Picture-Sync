@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" 
-    android:layout_gravity="center_vertical">
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/profile_picture"

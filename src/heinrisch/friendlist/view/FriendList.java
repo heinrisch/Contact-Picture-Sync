@@ -7,25 +7,32 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Window;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.android.Facebook;
 
-public class FriendList extends ListActivity {
+public class FriendList extends Activity {
 
 	Facebook facebook = new Facebook("424405194241987");
+	
+	ProgressDialog dialog;
+	
+	ArrayList<Friend> friends;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		setContentView(R.layout.friend_list);
 
 		//Get facebook access info
 		final Intent recieve_intent = getIntent();
@@ -43,48 +50,63 @@ public class FriendList extends ListActivity {
 		}
 
 		
-		//TODO: make this async...
-		//Get all friends with FQL
-		Bundle params = new Bundle();
-		params.putString("method", "fql.query");
-		params.putString("query", "SELECT name, uid, pic_square FROM user WHERE uid IN (select uid2 from friend where uid1=me()) order by name");
+		//Show dialog
+		dialog = ProgressDialog.show(FriendList.this, "", 
+	            "Getting your friends. Please wait...", true);
+		dialog.setCancelable(false);
+		dialog.show();
 
-		
-		ArrayList<Friend> friends = new ArrayList<Friend>();
-		try {
-			String response = facebook.request(params);
-			System.out.println(response);
-
-			JSONArray array = new JSONArray(response);
+		new Thread(new Runnable() {
 			
-			for(int i = 0; i < array.length(); i++){
-				System.out.println(array.getJSONObject(i).get("name") +  " " + array.getJSONObject(i).getString("pic_square"));
-				friends.add(new Friend(array.getJSONObject(i)));
+			@Override
+			public void run() {
+				//Get all friends with FQL
+				Bundle params = new Bundle();
+				params.putString("method", "fql.query");
+				params.putString("query", "SELECT name, uid, pic_square FROM user WHERE uid IN (select uid2 from friend where uid1=me()) order by name");
+
+
+				friends = new ArrayList<Friend>();
+				try {
+					String response = facebook.request(params);
+					System.out.println(response);
+
+					JSONArray array = new JSONArray(response);
+
+					for(int i = 0; i < array.length(); i++){
+						System.out.println(array.getJSONObject(i).get("name") +  " " + array.getJSONObject(i).getString("pic_square"));
+						friends.add(new Friend(array.getJSONObject(i)));
+					}
+
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e){
+					e.printStackTrace();
+				}
+				
+				/*
+				//TODO: make this async...
+				for(Friend f : friends){
+					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
+					Log.i("Downloaded image for:", (String) f.getName());
+					f.setProfilePic(b);
+				}*/
+				
+				downloadCompleteHandler.sendEmptyMessage(0);
 			}
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}).start();
 		
-		
-		//TODO: make this async...
-		for(Friend f : friends){
-			Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
-			Log.i("Downloaded image for:", (String) f.getName());
-			f.setProfilePic(b);
-		}
-		
-		FriendListAdapter adapter = new FriendListAdapter(this, friends);
-		setListAdapter(adapter);
-		
-
 	}
 	
+	protected Handler downloadCompleteHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg){
+			FriendListAdapter adapter = new FriendListAdapter(FriendList.this, friends);
+			((ListView) findViewById(R.id.friend_list)).setAdapter(adapter);
+			dialog.cancel();
+
+		}
+	};
 }
