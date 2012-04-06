@@ -19,8 +19,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.android.Facebook;
 
@@ -33,6 +31,7 @@ public class FriendList extends Activity {
 	ArrayList<Friend> friends;
 
 	FriendListAdapter friendListAdapter;
+	ListView friendListView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +46,6 @@ public class FriendList extends Activity {
 
 		if(access_token != null) facebook.setAccessToken(access_token);
 		if(expires != 0) facebook.setAccessExpires(expires);
-
-
-		if(facebook.isSessionValid()){
-			Toast.makeText(this, "So far so good...", Toast.LENGTH_LONG).show();
-		}else{
-			Toast.makeText(this, "So far... not so good...", Toast.LENGTH_LONG).show();
-		}
 
 
 		//Show dialog
@@ -102,42 +94,47 @@ public class FriendList extends Activity {
 		@Override
 		public void handleMessage(Message msg){
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-			((ListView) findViewById(R.id.friend_list)).setAdapter(friendListAdapter);
+			
+			friendListView = (ListView) findViewById(R.id.friend_list);
+			friendListView.setAdapter(friendListAdapter);
 
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					for(int i = 0; i < friends.size(); i++){
-						final Friend f = friends.get(i);
-						Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
-						Log.i("Downloaded image for:", (String) f.getName());
-						f.setProfilePic(b);
-						final int index = i;
-						runOnUiThread(new Runnable() {
-
-							@Override
-							public void run() {
-								ListView lv = (ListView) findViewById(R.id.friend_list);
-								View v = lv.getChildAt(index - lv.getFirstVisiblePosition());
-								if(v != null){
-									ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
-									if(f.hasDownloadedProfileImage()){
-										iv.setImageBitmap(f.getProfilePicture());
-									}
-								}
-							}
-						});
-					}
-
-				}
-			}).start();
-
-
+			downloadProfilePictures();
 			dialog.cancel();
 
 		}
 	};
+
+	protected void downloadProfilePictures() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				for(int i = 0; i < friends.size(); i++){
+					final Friend f = friends.get(i);
+					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
+					Log.i("Downloaded image for:", (String) f.getName());
+					f.setProfilePic(b);
+					
+					//Finally we need to uptade the picture
+					final int index = i;
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							View v = friendListView.getChildAt(index - friendListView.getFirstVisiblePosition());
+							if(v != null){
+								ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
+								if(f.hasDownloadedProfileImage()){
+									iv.setImageBitmap(f.getProfilePicture());
+								}
+							}
+						}
+					});
+				}
+
+			}
+		}).start();
+		
+	}
 
 
 }
