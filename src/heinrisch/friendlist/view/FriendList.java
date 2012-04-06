@@ -48,14 +48,20 @@ public class FriendList extends Activity {
 		if(expires != 0) facebook.setAccessExpires(expires);
 
 
-		//Show dialog
+		//Show dialog to distract user while downloading friends
 		dialog = ProgressDialog.show(FriendList.this, "", 
-				"Getting your friends. Please wait...", true);
+				getString(R.string.downloading_friends_text), true);
 		dialog.setCancelable(false);
 		dialog.show();
 
-		new Thread(new Runnable() {
 
+		//Download all friends
+		downloadFacebookFriends_async();
+
+	}
+
+	protected void downloadFacebookFriends_async() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				//Get all friends with FQL
@@ -87,36 +93,38 @@ public class FriendList extends Activity {
 				downloadCompleteHandler.sendEmptyMessage(0);
 			}
 		}).start();
-
 	}
 
 	protected Handler downloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-			
+
 			friendListView = (ListView) findViewById(R.id.friend_list);
 			friendListView.setAdapter(friendListAdapter);
 
-			downloadProfilePictures();
+			downloadProfilePictures_async();
 			dialog.cancel();
 
 		}
 	};
 
-	protected void downloadProfilePictures() {
+	protected void downloadProfilePictures_async() {
 		new Thread(new Runnable() {
-
 			@Override
 			public void run() {
 				for(int i = 0; i < friends.size(); i++){
-					final Friend f = friends.get(i);
+					int bestIndex = getBestFriend(i);
+					final Friend f = friends.get(bestIndex);
+
+					if(f.hasDownloadedProfileImage()) continue;
+
 					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
 					Log.i("Downloaded image for:", (String) f.getName());
 					f.setProfilePic(b);
-					
+
 					//Finally we need to uptade the picture
-					final int index = i;
+					final int index = bestIndex;
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -129,11 +137,30 @@ public class FriendList extends Activity {
 							}
 						}
 					});
+
+					//need to retry to download the old picture
+					if(bestIndex != i) i--;
 				}
 
 			}
+
+			//Simple method to find the best friend to download right now (one that the user is looking at is better than one that is not visible)
+			private int getBestFriend(int index) {
+				int viewingIndex = friendListView.getFirstVisiblePosition();
+				int lastViewingIndex = friendListView.getLastVisiblePosition();
+				while(viewingIndex <= lastViewingIndex && viewingIndex <= friends.size()){
+					if(!friends.get(viewingIndex).hasDownloadedProfileImage()){
+						index = viewingIndex;
+						break;
+					}
+					viewingIndex++;
+				}
+
+				return index;
+			}
+
 		}).start();
-		
+
 	}
 
 

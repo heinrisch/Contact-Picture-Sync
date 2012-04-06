@@ -8,5 +8,6 @@
     <string name="login_canceled_text">Canceled by user</string>
     <string name="session_no_valid_text">No valid session found, please login.</string>
     <string name="profile_picture_description">The persons facebook profile picture</string>
+    <string name="downloading_friends_text">Getting your friends. Please wait.</string>
 
 </resources>
