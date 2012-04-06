@@ -3,7 +3,6 @@ package heinrisch.friendlist.view;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +19,31 @@ public class FriendListAdapter extends ArrayAdapter<Friend> {
 		this.context = context;
 		this.friends = friends;
 	}
+	
+	static class ViewHolder {
+		public TextView name;
+		public ImageView profilePicture;
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		View layout = convertView;
+		if(convertView == null){
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			layout = inflater.inflate(R.layout.list_item_friend, parent, false);
+			
+			ViewHolder viewHolder = new ViewHolder();
+			viewHolder.name = (TextView) layout.findViewById(R.id.real_life_name);
+			viewHolder.profilePicture = (ImageView) layout.findViewById(R.id.profile_picture);
+			layout.setTag(viewHolder);
+		}
+		
 		Friend friend = friends.get(position);
+		ViewHolder holder = (ViewHolder) layout.getTag();
 		
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-		View layout = inflater.inflate(R.layout.list_item_friend, parent, false);
-		TextView textView = (TextView) layout.findViewById(R.id.real_life_name);
-		//ImageView imageView = (ImageView) rowView.findViewById(R.id.profile_picture);
-		textView.setText(friend.getName());
-		
-		ImageView iv = (ImageView) layout.findViewById(R.id.profile_picture);
-		
+		holder.name.setText(friend.getName());
 		if(friend.hasDownloadedProfileImage()){
-			iv.setImageBitmap(friend.getProfilePicture());
+			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}
 
 
