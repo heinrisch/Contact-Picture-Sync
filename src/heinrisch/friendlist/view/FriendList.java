@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
 
 public class FriendList extends ListActivity {
 
@@ -58,7 +58,7 @@ public class FriendList extends ListActivity {
 			JSONArray array = new JSONArray(response);
 			
 			for(int i = 0; i < array.length(); i++){
-				System.out.println(array.getJSONObject(i).get("name"));
+				System.out.println(array.getJSONObject(i).get("name") +  " " + array.getJSONObject(i).getString("pic_square"));
 				friends.add(new Friend(array.getJSONObject(i)));
 			}
 
@@ -74,10 +74,17 @@ public class FriendList extends ListActivity {
 		}
 		
 		
+		//TODO: make this async...
+		for(Friend f : friends){
+			Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
+			Log.i("Downloaded image for:", (String) f.getName());
+			f.setProfilePic(b);
+		}
+		
 		FriendListAdapter adapter = new FriendListAdapter(this, friends);
 		setListAdapter(adapter);
 		
 
 	}
-
+	
 }
