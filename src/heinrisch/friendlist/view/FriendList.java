@@ -1,10 +1,6 @@
 package heinrisch.friendlist.view;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -16,7 +12,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,20 +48,20 @@ public class FriendList extends Activity {
 		friends = new ArrayList<Friend>();
 
 		//Show dialog to distract user while downloading friends
-		dialog = ProgressDialog.show(FriendList.this, "", 
-				getString(R.string.downloading_friends_text), true);
+		dialog = ProgressDialog.show(FriendList.this, "", getString(R.string.downloading_friends_text), true);
 		dialog.setCancelable(false);
 		dialog.show();
 
 
 		//Load friends if cached
-		String jsonFriends = getFriendsJSONFromCache();
+		String jsonFriends = Tools.getStringFromFile(getFriendsJSONCacheFile());
 		if(jsonFriends != null){
 			parseJSONFriendsToArrayList(jsonFriends,friends);
 			dialog.cancel();
 			
 			for(Friend f : friends){
-				Bitmap b = getProfilePictureFromCache(f);
+				File file = new File(getCacheDir(), f.getUID());
+				Bitmap b = Tools.getBitmapFromFile(file);
 				if(b != null) f.setProfilePic(b);
 			}
 		}
@@ -81,6 +76,7 @@ public class FriendList extends Activity {
 
 	}
 
+	//Download friends and put them in cache
 	protected void downloadFacebookFriends_async() {
 		new Thread(new Runnable() {
 			@Override
@@ -93,7 +89,8 @@ public class FriendList extends Activity {
 
 				try {
 					String response = facebook.request(params);
-					saveFriendsToCache(response);
+					File file = new File(getCacheDir(), Constants.cache_JSON_Friends);
+					Tools.saveStringToFile(response, file);
 
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -136,63 +133,6 @@ public class FriendList extends Activity {
 		}
 	};
 
-
-	private void saveFriendsToCache(String friends) {
-		File file = new File(getCacheDir(), Constants.cache_JSON_Friends);
-		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(friends.getBytes());
-			fos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
-	}
-
-	protected boolean updateToLatestFriendList() {
-		ArrayList<Friend> newFriendList = new ArrayList<Friend>();
-		String jsonFriends = getFriendsJSONFromCache();
-		parseJSONFriendsToArrayList(jsonFriends, newFriendList);
-		
-		if(!friendListsAreEqual(friends,newFriendList)){
-			friends = newFriendList;
-			return true;
-		}
-		
-		return false;
-	}
-
-	private boolean friendListsAreEqual(ArrayList<Friend> a, ArrayList<Friend> b) {
-		if(a.size() != b.size()) return false;
-		
-		for(int i = 0; i < a.size(); i++) if(!a.get(i).equals(b.get(i))) return false;
-		
-		return true;
-	}
-
-	private String getFriendsJSONFromCache() {
-		File file = new File(getCacheDir(), Constants.cache_JSON_Friends);
-		if(!file.exists()) return null;
-		String result = "";
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String read = null;
-
-			while(null != (read = br.readLine())){
-				result += read;
-			}
-
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return result.equals("") ? null : result;
-	}
-
 	protected void downloadProfilePictures_async() {
 		new Thread(new Runnable() {
 			@Override
@@ -203,11 +143,12 @@ public class FriendList extends Activity {
 
 					if(f.hasDownloadedProfilePicture()) continue;
 
-					Bitmap picture = getProfilePictureFromCache(f); 
+					File file = new File(getCacheDir(), f.getUID());
+					Bitmap picture = Tools.getBitmapFromFile(file); 
 
 					if(picture == null){
 						picture = Tools.downloadBitmap(f.getProfilePictureURL());
-						storeProfilePictureToCache(f,picture);
+						Tools.storePictureToFile(file, picture);
 					}
 					f.setProfilePic(picture);
 
@@ -219,8 +160,7 @@ public class FriendList extends Activity {
 
 			}
 
-
-			//Updates the picture in the listview
+			//Updates the picture in the listView
 			private void updateProfilePictureAtIndex(final Friend f, final int index) {
 				runOnUiThread(new Runnable() {
 					@Override
@@ -254,24 +194,29 @@ public class FriendList extends Activity {
 		}).start();
 
 	}
-	
-	private Bitmap getProfilePictureFromCache(Friend f) {
-		File target = new File(getCacheDir(), f.getUID());
-		if(target.exists())
-			return BitmapFactory.decodeFile(target.getPath());
 
-		return null;
+	//Updates friends to friends found in cache (returns true if updated)
+	protected boolean updateToLatestFriendList() {
+		ArrayList<Friend> newFriendList = new ArrayList<Friend>();
+		String jsonFriends = Tools.getStringFromFile(getFriendsJSONCacheFile());
+		parseJSONFriendsToArrayList(jsonFriends, newFriendList);
+		
+		if(!friendListsAreEqual(friends,newFriendList)){
+			friends = newFriendList;
+			return true;
+		}
+		
+		return false;
 	}
 
-	private void storeProfilePictureToCache(Friend f, Bitmap picture) {
-		File file = new File(getCacheDir(), f.getUID());
-		try {
-			FileOutputStream out = new FileOutputStream(file);
-			picture.compress(Bitmap.CompressFormat.PNG, 90, out);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
+	private boolean friendListsAreEqual(ArrayList<Friend> a, ArrayList<Friend> b) {
+		if(a.size() != b.size()) return false;
+		for(int i = 0; i < a.size(); i++) if(!a.get(i).equals(b.get(i))) return false;
+		return true;
+	}
+	
+	private File getFriendsJSONCacheFile(){
+		return new File(getCacheDir(), Constants.cache_JSON_Friends);
 	}
 
 }
