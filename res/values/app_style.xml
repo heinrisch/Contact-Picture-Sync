@@ -12,6 +12,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:background">@color/white</item>
         <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@android:color/transparent</item>
     </style>
 
 </resources>

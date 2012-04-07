@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,7 +27,7 @@ public class FriendList extends Activity {
 
 	Facebook facebook = new Facebook("424405194241987");
 
-	ProgressDialog dialog;
+	Dialog dialog;
 
 	ArrayList<Friend> friends;
 
@@ -48,9 +49,9 @@ public class FriendList extends Activity {
 		friends = new ArrayList<Friend>();
 
 		//Show dialog to distract user while downloading friends
-		dialog = ProgressDialog.show(FriendList.this, "", getString(R.string.downloading_friends_text), true);
-		dialog.setCancelable(false);
+		dialog = new ProgressDialog(this);
 		dialog.show();
+		dialog.setContentView(R.layout.custom_progress_dialog);
 
 
 		//Load friends if cached
@@ -58,7 +59,7 @@ public class FriendList extends Activity {
 		if(jsonFriends != null){
 			parseJSONFriendsToArrayList(jsonFriends,friends);
 			dialog.cancel();
-			
+
 			for(Friend f : friends){
 				File file = new File(getCacheDir(), f.getUID());
 				Bitmap b = Tools.getBitmapFromFile(file);
@@ -104,7 +105,7 @@ public class FriendList extends Activity {
 
 		}).start();
 	}
-	
+
 	private void parseJSONFriendsToArrayList(String jsonFriends, ArrayList<Friend> arraylist) {
 		try {
 			JSONArray array = new JSONArray(jsonFriends);
@@ -114,19 +115,19 @@ public class FriendList extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	protected Handler friendDownloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			
+
 			if(updateToLatestFriendList() || friends.size() == 0){
 				//TODO: should notify user
 				friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 				friendListView.setAdapter(friendListAdapter);
 			}
-			
+
 			downloadProfilePictures_async();
 			dialog.cancel();
 
@@ -148,9 +149,11 @@ public class FriendList extends Activity {
 
 					if(picture == null){
 						picture = Tools.downloadBitmap(f.getProfilePictureURL());
+					}
+					if(picture != null){
+						f.setProfilePic(picture);
 						Tools.storePictureToFile(file, picture);
 					}
-					f.setProfilePic(picture);
 
 					updateProfilePictureAtIndex(f, bestIndex);
 
@@ -200,12 +203,12 @@ public class FriendList extends Activity {
 		ArrayList<Friend> newFriendList = new ArrayList<Friend>();
 		String jsonFriends = Tools.getStringFromFile(getFriendsJSONCacheFile());
 		parseJSONFriendsToArrayList(jsonFriends, newFriendList);
-		
+
 		if(!friendListsAreEqual(friends,newFriendList)){
 			friends = newFriendList;
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -214,7 +217,7 @@ public class FriendList extends Activity {
 		for(int i = 0; i < a.size(); i++) if(!a.get(i).equals(b.get(i))) return false;
 		return true;
 	}
-	
+
 	private File getFriendsJSONCacheFile(){
 		return new File(getCacheDir(), Constants.cache_JSON_Friends);
 	}
