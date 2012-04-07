@@ -32,7 +32,7 @@ public class FriendList extends Activity {
 
 	FriendListAdapter friendListAdapter;
 	ListView friendListView;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +43,6 @@ public class FriendList extends Activity {
 		final Intent recieve_intent = getIntent();
 		String access_token = recieve_intent.getStringExtra(Constants.bundle_Access_Token);
 		long expires = recieve_intent.getLongExtra(Constants.bundle_Access_Expires, 0);
-
 		if(access_token != null) facebook.setAccessToken(access_token);
 		if(expires != 0) facebook.setAccessExpires(expires);
 
@@ -53,6 +52,11 @@ public class FriendList extends Activity {
 				getString(R.string.downloading_friends_text), true);
 		dialog.setCancelable(false);
 		dialog.show();
+		
+		friends = new ArrayList<Friend>();
+		friendListAdapter = new FriendListAdapter(FriendList.this, friends);
+		friendListView = (ListView) findViewById(R.id.friend_list);
+		friendListView.setAdapter(friendListAdapter);
 
 
 		//Download all friends
@@ -69,16 +73,12 @@ public class FriendList extends Activity {
 				params.putString("method", "fql.query");
 				params.putString("query", "SELECT name, uid, pic_square FROM user WHERE uid IN (select uid2 from friend where uid1=me()) order by name");
 
-
-				friends = new ArrayList<Friend>();
 				try {
 					String response = facebook.request(params);
-					System.out.println(response);
 
 					JSONArray array = new JSONArray(response);
 
 					for(int i = 0; i < array.length(); i++){
-						System.out.println(array.getJSONObject(i).get("name") +  " " + array.getJSONObject(i).getString("pic_square"));
 						friends.add(new Friend(array.getJSONObject(i)));
 					}
 
@@ -98,11 +98,7 @@ public class FriendList extends Activity {
 	protected Handler downloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-
-			friendListView = (ListView) findViewById(R.id.friend_list);
-			friendListView.setAdapter(friendListAdapter);
-
+			friendListAdapter.notifyDataSetChanged();
 			downloadProfilePictures_async();
 			dialog.cancel();
 

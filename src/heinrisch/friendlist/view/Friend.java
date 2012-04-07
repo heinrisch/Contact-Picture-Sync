@@ -35,7 +35,7 @@ public class Friend {
 
 
 	public void setProfilePic(Bitmap b) {
-		this.profilePicture = Bitmap.createScaledBitmap(b, 80, 80, true);
+		this.profilePicture = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture_Width, Constants.size_Profile_Picture_Heigth, true);
 		
 	}
 

@@ -1,6 +1,7 @@
 package heinrisch.friendlist.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIndexer {
 	private final Context context;
 	ArrayList<Friend> friends;
-	
+
 	//Fastscoll variables
 	HashMap<Character, Integer> letterIndex;
 	Character[] sections;
@@ -26,26 +27,28 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		super(context, R.layout.list_item_friend, friends);
 		this.context = context;
 		this.friends = friends;
-		
-		//create selection index
+	}
+
+	public void createKeyIndex(){
 		letterIndex = new HashMap<Character, Integer>(); 
-		
+
 		for (int i = friends.size()-1; i >0; i--) {
 			letterIndex.put(friends.get(i).getName().charAt(0), i); 
 		}
 		
-		Set<Character> keys = letterIndex.keySet();
+		sections = letterIndex.keySet().toArray(new Character[letterIndex.size()]);
 		
-		ArrayList<Character> keyList = new ArrayList<Character>();
-
-		for (Character c : keys) keyList.add(c);
-
-		Collections.sort(keyList);
-
-		sections = new Character[keyList.size()];
-		keyList.toArray(sections);
+		Arrays.sort(sections);
 	}
+
 	
+	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		createKeyIndex();
+	}
+
+	//For view recycling (optimization for listview)
 	static class ViewHolder {
 		public TextView name;
 		public ImageView profilePicture;
@@ -57,16 +60,16 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		if(convertView == null){
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			layout = inflater.inflate(R.layout.list_item_friend, parent, false);
-			
+
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.name = (TextView) layout.findViewById(R.id.real_life_name);
 			viewHolder.profilePicture = (ImageView) layout.findViewById(R.id.profile_picture);
 			layout.setTag(viewHolder);
 		}
-		
+
 		Friend friend = friends.get(position);
 		ViewHolder holder = (ViewHolder) layout.getTag();
-		
+
 		holder.name.setText(friend.getName());
 		if(friend.hasDownloadedProfileImage()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
@@ -77,7 +80,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 
 		return layout;
 	}
-	
+
 
 
 	@Override
@@ -88,13 +91,13 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 	}
 
 	@Override
-	public int getSectionForPosition(int position) {
-		return 1;
+	public Object[] getSections() {
+		return sections;
 	}
 
 	@Override
-	public Object[] getSections() {
-		return sections;
+	public int getSectionForPosition(int arg0) {
+		return 0;
 	}
 
 }
