@@ -48,4 +48,9 @@ public class Friend {
 		return uid;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		return uid.equals(((Friend)o).uid);
+	}
+	
 }

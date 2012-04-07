@@ -44,15 +44,14 @@ public class Main extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				authorizeWithFacebook();
+				if(facebook.isSessionValid()){
+					launchFriendList();
+				}else{
+					authorizeWithFacebook();
+				}
 
 			}
 		});
-
-		//Session is valid we are good to go, else we stay at the login screen
-		if(facebook.isSessionValid()){
-			launchFriendList();
-		}
 
 	}
 
