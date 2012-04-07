@@ -116,28 +116,30 @@ public class FriendList extends Activity {
 					if(f.hasDownloadedProfileImage()) continue;
 
 					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
-					Log.i("Downloaded image for:", (String) f.getName());
 					f.setProfilePic(b);
 
-					//Finally we need to uptade the picture
-					final int index = bestIndex;
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							View v = friendListView.getChildAt(index - friendListView.getFirstVisiblePosition());
-							if(v != null){
-								ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
-								if(f.hasDownloadedProfileImage()){
-									iv.setImageBitmap(f.getProfilePicture());
-								}
-							}
-						}
-					});
+					updateProfilePictureAtIndex(f, bestIndex);
 
 					//need to retry to download the old picture
 					if(bestIndex != i) i--;
 				}
 
+			}
+
+			//Updates the picture in the listview
+			private void updateProfilePictureAtIndex(final Friend f, final int index) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						View v = friendListView.getChildAt(index - friendListView.getFirstVisiblePosition());
+						if(v != null){
+							ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
+							if(f.hasDownloadedProfileImage()){
+								iv.setImageBitmap(f.getProfilePicture());
+							}
+						}
+					}
+				});
 			}
 
 			//Simple method to find the best friend to download right now (one that the user is looking at is better than one that is not visible)
@@ -158,6 +160,5 @@ public class FriendList extends Activity {
 		}).start();
 
 	}
-
 
 }

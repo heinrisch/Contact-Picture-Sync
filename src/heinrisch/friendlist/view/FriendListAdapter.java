@@ -2,11 +2,12 @@ package heinrisch.friendlist.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Set;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +23,18 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 	//Fastscoll variables
 	HashMap<Character, Integer> letterIndex;
 	Character[] sections;
+	
+	//Picture for unknown people
+	Bitmap mr_unknown;
 
 	public FriendListAdapter(Context context, ArrayList<Friend> friends) {
 		super(context, R.layout.list_item_friend, friends);
 		this.context = context;
 		this.friends = friends;
+		
+		Resources r = this.getContext().getResources();
+		Bitmap b = BitmapFactory.decodeResource(r, R.drawable.mr_unknown);
+		mr_unknown = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture_Width, Constants.size_Profile_Picture_Heigth, true);
 	}
 
 	public void createKeyIndex(){
@@ -74,7 +82,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		if(friend.hasDownloadedProfileImage()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}else{
-			holder.profilePicture.setImageResource(R.drawable.mr_unknown);
+			holder.profilePicture.setImageBitmap(mr_unknown);
 		}
 
 
