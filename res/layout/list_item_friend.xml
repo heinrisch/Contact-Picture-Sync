@@ -5,7 +5,8 @@
     android:orientation="horizontal" 
     android:gravity="center_vertical" 
     android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:paddingBottom="2dp"
+    android:background="@android:color/transparent">
 
     <ImageView
         android:id="@+id/profile_picture"
@@ -19,6 +20,6 @@
         android:id="@+id/real_life_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        style="@style/FriendListText"/>
 
 </LinearLayout>

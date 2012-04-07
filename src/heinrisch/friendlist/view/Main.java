@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
@@ -38,7 +39,7 @@ public class Main extends Activity {
 		if(access_token != null) facebook.setAccessToken(access_token);
 		if(expires != 0) facebook.setAccessExpires(expires);
 
-		Button login = (Button) findViewById(R.id.login_button);
+		ImageButton login = (ImageButton) findViewById(R.id.login_button);
 		login.setOnClickListener(new OnClickListener() {
 
 			@Override

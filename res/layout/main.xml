@@ -2,13 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="@color/white" >
 
-    <Button
+    <ImageButton
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/login_button" />
+        android:text="@string/login_button"
+        android:contentDescription="@string/login_button_description"
+        android:src="@drawable/login"
+        android:background="@android:color/transparent" />
 
 </LinearLayout>
