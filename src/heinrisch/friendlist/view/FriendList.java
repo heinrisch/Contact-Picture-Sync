@@ -1,5 +1,8 @@
 package heinrisch.friendlist.view;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -11,10 +14,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -113,10 +116,15 @@ public class FriendList extends Activity {
 					int bestIndex = getBestFriend(i);
 					final Friend f = friends.get(bestIndex);
 
-					if(f.hasDownloadedProfileImage()) continue;
+					if(f.hasDownloadedProfilePicture()) continue;
 
-					Bitmap b = Tools.downloadBitmap(f.getProfilePictureURL());
-					f.setProfilePic(b);
+					Bitmap picture = getProfilePictureFromCache(f); 
+					
+					if(picture == null){
+						picture = Tools.downloadBitmap(f.getProfilePictureURL());
+						storeProfilePictureToCache(f,picture);
+					}
+					f.setProfilePic(picture);
 
 					updateProfilePictureAtIndex(f, bestIndex);
 
@@ -124,6 +132,25 @@ public class FriendList extends Activity {
 					if(bestIndex != i) i--;
 				}
 
+			}
+
+			private Bitmap getProfilePictureFromCache(Friend f) {
+				File target = new File(getCacheDir(), f.getUID());
+				if(target.exists())
+			        return BitmapFactory.decodeFile(target.getPath());
+				
+				return null;
+			}
+
+			private void storeProfilePictureToCache(Friend f, Bitmap picture) {
+				File file = new File(getCacheDir(), f.getUID());
+				try {
+					FileOutputStream out = new FileOutputStream(file);
+					picture.compress(Bitmap.CompressFormat.PNG, 90, out);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				
 			}
 
 			//Updates the picture in the listview
@@ -134,7 +161,7 @@ public class FriendList extends Activity {
 						View v = friendListView.getChildAt(index - friendListView.getFirstVisiblePosition());
 						if(v != null){
 							ImageView iv = (ImageView) v.findViewById(R.id.profile_picture);
-							if(f.hasDownloadedProfileImage()){
+							if(f.hasDownloadedProfilePicture()){
 								iv.setImageBitmap(f.getProfilePicture());
 							}
 						}
@@ -147,7 +174,7 @@ public class FriendList extends Activity {
 				int viewingIndex = friendListView.getFirstVisiblePosition();
 				int lastViewingIndex = friendListView.getLastVisiblePosition();
 				while(viewingIndex <= lastViewingIndex && viewingIndex <= friends.size()){
-					if(!friends.get(viewingIndex).hasDownloadedProfileImage()){
+					if(!friends.get(viewingIndex).hasDownloadedProfilePicture()){
 						index = viewingIndex;
 						break;
 					}

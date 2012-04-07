@@ -12,16 +12,11 @@ public class Friend {
 	private String uid;
 	private Bitmap profilePicture = null;
 	
-	public Friend(String name){
-		this.name = name;
-	}
-	
 	
 	public Friend(JSONObject json) throws JSONException {
         this.name = json.getString("name");
         this.profilePictureURL = json.getString("pic_square");
         this.uid = json.getString("uid");
-        
 	}
 
 
@@ -39,7 +34,7 @@ public class Friend {
 		
 	}
 
-	public boolean hasDownloadedProfileImage() {
+	public boolean hasDownloadedProfilePicture() {
 		return profilePicture != null;
 	}
 

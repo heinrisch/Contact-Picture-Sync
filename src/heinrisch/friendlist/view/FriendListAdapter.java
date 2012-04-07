@@ -79,7 +79,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		ViewHolder holder = (ViewHolder) layout.getTag();
 
 		holder.name.setText(friend.getName());
-		if(friend.hasDownloadedProfileImage()){
+		if(friend.hasDownloadedProfilePicture()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}else{
 			holder.profilePicture.setImageBitmap(mr_unknown);
