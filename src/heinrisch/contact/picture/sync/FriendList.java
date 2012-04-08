@@ -53,24 +53,7 @@ public class FriendList extends Activity {
 		dialog.show();
 		dialog.setContentView(R.layout.custom_progress_dialog);
 
-
-		//Load friends if cached
-		String jsonFriends = Tools.getStringFromFile(getFriendsJSONCacheFile());
-		if(jsonFriends != null){
-			parseJSONFriendsToArrayList(jsonFriends,friends);
-			dialog.cancel();
-
-			for(Friend f : friends){
-				File file = new File(getCacheDir(), f.getUID());
-				Bitmap b = Tools.getBitmapFromFile(file);
-				if(b != null) f.setProfilePic(b);
-			}
-		}
-
-		friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 		friendListView = (ListView) findViewById(R.id.friend_list);
-		friendListView.setAdapter(friendListAdapter);
-
 
 		//Download all friends
 		downloadFacebookFriends_async();
@@ -122,11 +105,8 @@ public class FriendList extends Activity {
 		@Override
 		public void handleMessage(Message msg){
 
-			if(updateToLatestFriendList() || friends.size() == 0){
-				//TODO: should notify user
-				friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-				friendListView.setAdapter(friendListAdapter);
-			}
+			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
+			friendListView.setAdapter(friendListAdapter);
 
 			downloadProfilePictures_async();
 			dialog.cancel();
