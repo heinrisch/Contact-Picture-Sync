@@ -8,10 +8,11 @@
     <string name="login_canceled_text">Canceled by user</string>
     <string name="session_no_valid_text">No valid session found, please login.</string>
     <string name="profile_picture_description">The persons facebook profile picture</string>
-    <string name="downloading_friends_text">Getting your friends. Please wait.</string>
+    <string name="downloading_friends_text">Getting your friends</string>
     <string name="login_button_description">Facebook login button</string>
-    <string name="getting_your_contacts_text">Getting your contacts..</string>
+    <string name="getting_your_contacts_text">Syncing with your contacts</string>
     <string name="friend_contact_no_match_found">No match found</string>
     <string name="friend_contact_match_found">Match found!</string>
+    <string name="sync_description">Sync pictures from facebook</string>
 
 </resources>

@@ -106,6 +106,7 @@ public class FriendList extends Activity {
 
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 			friendListView.setAdapter(friendListAdapter);
+			
 			dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
 			
 			//Fetch the progressbar so that it can be update
