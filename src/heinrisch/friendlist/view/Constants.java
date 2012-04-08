@@ -9,4 +9,7 @@ public final class Constants {
 	
 	
 	public static final String cache_JSON_Friends 	= 	"jsonFriends";
+	
+	
+	public static final String facebook_appID	= 	"424405194241987";
 }

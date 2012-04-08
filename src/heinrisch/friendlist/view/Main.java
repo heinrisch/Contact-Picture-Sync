@@ -18,9 +18,7 @@ import com.facebook.android.FacebookError;
 
 public class Main extends Activity {
 
-	Facebook facebook = new Facebook("424405194241987");
-
-	String TOKENSAVE = "LoginToken";
+	Facebook facebook = new Facebook(Constants.facebook_appID);
 
 	SharedPreferences sharedPreferences;
 
@@ -86,18 +84,6 @@ public class Main extends Activity {
 		editor.commit();
 	}
 
-	public void showError(String Error){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(Error)
-		.setCancelable(false)
-		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-		builder.create().show();
-	}
-
 
 	public void launchFriendList(){
 		if(!facebook.isSessionValid()){
@@ -120,5 +106,18 @@ public class Main extends Activity {
 			saveFacebookAccess();
 			launchFriendList();
 		}
+	}
+	
+	
+	public void showError(String Error){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(Error)
+		.setCancelable(false)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		builder.create().show();
 	}
 }
