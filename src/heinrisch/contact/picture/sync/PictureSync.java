@@ -90,7 +90,7 @@ public class PictureSync extends Activity{
 						
 					lastName = soh.name;
 					updateProgressCounterHandler.sendEmptyMessage(0);
-					ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
+					if(lastPicture != null) ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
 				}
 
 				syncingDoneHandler.sendEmptyMessage(0);
