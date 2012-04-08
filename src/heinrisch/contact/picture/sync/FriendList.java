@@ -73,8 +73,7 @@ public class FriendList extends Activity {
 
 				try {
 					String response = facebook.request(params);
-					File file = new File(getCacheDir(), Constants.cache_JSON_Friends);
-					Tools.saveStringToFile(response, file);
+					parseJSONFriendsToArrayList(response, friends);
 
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -107,6 +106,14 @@ public class FriendList extends Activity {
 
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 			friendListView.setAdapter(friendListAdapter);
+
+		}
+	};
+	
+	
+	protected Handler friendContactMappingCompleteHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg){
 
 			downloadProfilePictures_async();
 			dialog.cancel();
@@ -176,30 +183,6 @@ public class FriendList extends Activity {
 
 		}).start();
 
-	}
-
-	//Updates friends to friends found in cache (returns true if updated)
-	protected boolean updateToLatestFriendList() {
-		ArrayList<Friend> newFriendList = new ArrayList<Friend>();
-		String jsonFriends = Tools.getStringFromFile(getFriendsJSONCacheFile());
-		parseJSONFriendsToArrayList(jsonFriends, newFriendList);
-
-		if(!friendListsAreEqual(friends,newFriendList)){
-			friends = newFriendList;
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean friendListsAreEqual(ArrayList<Friend> a, ArrayList<Friend> b) {
-		if(a.size() != b.size()) return false;
-		for(int i = 0; i < a.size(); i++) if(!a.get(i).equals(b.get(i))) return false;
-		return true;
-	}
-
-	private File getFriendsJSONCacheFile(){
-		return new File(getCacheDir(), Constants.cache_JSON_Friends);
 	}
 
 }

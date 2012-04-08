@@ -27,9 +27,6 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
-		ContactHandler ch = new ContactHandler(this);
-		ch.readContacts();
 
 		//Check if we already have an access token
 		sharedPreferences = getPreferences(MODE_PRIVATE);
