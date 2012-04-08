@@ -61,6 +61,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 	//For view recycling (optimization for listview)
 	static class ViewHolder {
 		public TextView name;
+		public TextView matchFound;
 		public ImageView profilePicture;
 	}
 
@@ -73,6 +74,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.name = (TextView) layout.findViewById(R.id.real_life_name);
+			viewHolder.matchFound = (TextView) layout.findViewById(R.id.friend_contact_match_found);
 			viewHolder.profilePicture = (ImageView) layout.findViewById(R.id.profile_picture);
 			layout.setTag(viewHolder);
 		}
@@ -81,12 +83,20 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		ViewHolder holder = (ViewHolder) layout.getTag();
 
 		holder.name.setText(friend.getName());
+		
 		if(friend.hasDownloadedProfilePicture()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}else{
 			holder.profilePicture.setImageBitmap(mr_unknown);
 		}
 
+		if(friend.isMatchedWithContact()){
+			holder.matchFound.setText(getContext().getString(R.string.friend_contact_match_found));
+			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.green));
+		}else{
+			holder.matchFound.setText(getContext().getString(R.string.friend_contact_match_found));
+			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.red));
+		}
 
 		return layout;
 	}

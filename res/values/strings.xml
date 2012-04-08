@@ -11,5 +11,7 @@
     <string name="downloading_friends_text">Getting your friends. Please wait.</string>
     <string name="login_button_description">Facebook login button</string>
     <string name="getting_your_contacts_text">Getting your contacts..</string>
+    <string name="friend_contact_no_match_found">No match found</string>
+    <string name="friend_contact_match_found">Match found!</string>
 
 </resources>
