@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/downloading_friends_text"
-        android:textColor="@color/black"
+        style="@style/FriendListTextSmaller"
         />
 
 </LinearLayout>

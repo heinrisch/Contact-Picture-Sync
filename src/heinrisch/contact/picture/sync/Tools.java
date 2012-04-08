@@ -81,7 +81,7 @@ public class Tools {
 	
 	public static byte[] bitmapToByteArray(Bitmap bitmap){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-		bitmap.compress(CompressFormat.PNG, 90, baos); 
+		bitmap.compress(CompressFormat.PNG, 0, baos); 
 		return baos.toByteArray();
 	}
 

@@ -94,7 +94,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 			holder.matchFound.setText(getContext().getString(R.string.friend_contact_match_found));
 			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.green));
 		}else{
-			holder.matchFound.setText(getContext().getString(R.string.friend_contact_match_found));
+			holder.matchFound.setText(getContext().getString(R.string.friend_contact_no_match_found));
 			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.red));
 		}
 

@@ -68,12 +68,7 @@ public class ContactHandler {
 	public static Uri getPicture(Context context, String ID){
 		ContentResolver cr = context.getContentResolver();
 		Uri rawContactUri = null;
-		Cursor rawContactCursor =  cr.query(
-				RawContacts.CONTENT_URI, 
-				new String[] {RawContacts._ID}, 
-				RawContacts.CONTACT_ID + " = " + ID, 
-				null, 
-				null);
+		Cursor rawContactCursor =  cr.query(RawContacts.CONTENT_URI, new String[] {RawContacts._ID}, RawContacts.CONTACT_ID + " = " + ID, null, null);
 		if(!rawContactCursor.isAfterLast()) {
 			rawContactCursor.moveToFirst();
 			rawContactUri = RawContacts.CONTENT_URI.buildUpon().appendPath(""+rawContactCursor.getLong(0)).build();
@@ -87,17 +82,16 @@ public class ContactHandler {
 	public static void setContactPicture(Context context, String ID, Bitmap picture){
 		ContentResolver cr = context.getContentResolver();
 		Uri rawContactUri = getPicture(context, ID);
+		if(rawContactUri == null){
+			Log.e("rawContactUri", "is null");
+			return;
+		}
 		ContentValues values = new ContentValues(); 
 		int photoRow = -1; 
 		String where = ContactsContract.Data.RAW_CONTACT_ID + " == " + 
 				ContentUris.parseId(rawContactUri) + " AND " + Data.MIMETYPE + "=='" + 
 				ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'"; 
-		Cursor cursor = cr.query(
-				ContactsContract.Data.CONTENT_URI, 
-				null, 
-				where, 
-				null, 
-				null); 
+		Cursor cursor = cr.query(ContactsContract.Data.CONTENT_URI,	null, where, null, null); 
 		int idIdx = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID); 
 		if(cursor.moveToFirst()){ 
 			photoRow = cursor.getInt(idIdx); 
@@ -110,11 +104,10 @@ public class ContactHandler {
 		values.put(ContactsContract.Data.MIMETYPE, 
 				ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE); 
 		if(photoRow >= 0){ 
-			int a = cr.update(
+			cr.update(
 					ContactsContract.Data.CONTENT_URI, 
 					values, 
 					ContactsContract.Data._ID + " = " + photoRow, null);
-			Log.e("rows update:", a + "");
 		} else { 
 			cr.insert(
 					ContactsContract.Data.CONTENT_URI, 
