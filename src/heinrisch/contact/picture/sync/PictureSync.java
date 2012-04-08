@@ -1,5 +1,7 @@
 package heinrisch.contact.picture.sync;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -78,17 +80,48 @@ public class PictureSync extends Activity{
 			public void run() {
 				for(SyncObject soh : syncObjects){
 					if(soh.url == null || soh.url.equals("")) continue;
-					lastPicture = Tools.downloadBitmap(soh.url);
+
+					//try to find larger picture
+					String largeURL = getLargeProfilePictureURL(soh.uid);
+
+					if(largeURL != null)
+						lastPicture = Tools.downloadBitmap(largeURL);
+					
+					if(largeURL == null || lastPicture == null)
+						lastPicture = Tools.downloadBitmap(soh.url);
+						
 					lastName = soh.name;
 					updateProgressCounterHandler.sendEmptyMessage(0);
 					ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
 				}
-				
+
 				syncingDoneHandler.sendEmptyMessage(0);
 
 			}
 		}).start();
 
+	}
+
+	public String getLargeProfilePictureURL(String uid){
+		Bundle params = new Bundle();
+		params.putString("method", "fql.query");
+		params.putString("query", 	"SELECT src_big FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = "+uid+" AND type = 'profile')  limit 1");							
+		String URL = null;
+		try {
+			String response = facebook.request(params);
+			JSONArray array = new JSONArray(response);
+
+			if(array.length() > 0) URL = array.getJSONObject(0).getString("src_big");
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return URL;
 	}
 
 	protected Handler updateProgressCounterHandler = new Handler() {
@@ -100,7 +133,7 @@ public class PictureSync extends Activity{
 
 		}
 	};
-	
+
 	protected Handler syncingDoneHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
@@ -110,12 +143,13 @@ public class PictureSync extends Activity{
 
 
 	class SyncObject{
-		String name,contactID,url;
+		String name,contactID,url,uid;
 
 		public SyncObject(JSONObject json) throws JSONException{
 			this.name = json.getString(Constants.facebook_name);
 			this.contactID = json.getString(Constants.local_contactID);
 			this.url = json.getString(Constants.facebook_pic_big);
+			this.uid = json.getString(Constants.facebook_uid);
 		}
 
 	}

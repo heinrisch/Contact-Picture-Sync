@@ -51,9 +51,8 @@ public class Main extends Activity {
 		});
 
 	}
-
 	protected void authorizeWithFacebook() {
-		facebook.authorize(this, new DialogListener() {
+		facebook.authorize(this, new String[] { "friends_photos" }, new DialogListener() {
 			@Override
 			public void onComplete(Bundle values) {
 				//Save access token on successful login

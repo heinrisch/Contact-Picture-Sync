@@ -84,6 +84,7 @@ public class FriendList extends Activity {
 							obj.put(Constants.facebook_name,f.getName());
 							obj.put(Constants.local_contactID,f.getContactID());
 							obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
+							obj.put(Constants.facebook_uid, f.getUID());
 							jsonFriends.put(obj);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
@@ -121,14 +122,16 @@ public class FriendList extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
+				
+			
+				
 				friendDownloadCompleteHandler.sendEmptyMessage(0);
 			}
 
 
 		}).start();
 	}
-
+	
 	private void parseJSONFriendsToArrayList(String jsonFriends, ArrayList<Friend> arraylist) {
 		try {
 			JSONArray array = new JSONArray(jsonFriends);
