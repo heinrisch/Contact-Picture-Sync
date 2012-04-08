@@ -1,4 +1,4 @@
-package heinrisch.friendlist.view;
+package heinrisch.contact.picture.sync;
 
 import java.util.ArrayList;
 import java.util.Arrays;

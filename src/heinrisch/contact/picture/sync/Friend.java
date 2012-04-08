@@ -1,4 +1,4 @@
-package heinrisch.friendlist.view;
+package heinrisch.contact.picture.sync;
 
 import org.json.JSONException;
 import org.json.JSONObject;

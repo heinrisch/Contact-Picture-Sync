@@ -1,4 +1,4 @@
-package heinrisch.friendlist.view;
+package heinrisch.contact.picture.sync;
 
 import java.io.BufferedReader;
 import java.io.File;

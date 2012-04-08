@@ -1,4 +1,4 @@
-package heinrisch.friendlist.view;
+package heinrisch.contact.picture.sync;
 
 import android.app.Activity;
 import android.app.AlertDialog;
