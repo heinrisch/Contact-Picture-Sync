@@ -16,12 +16,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.facebook.android.Facebook;
 
@@ -102,7 +100,6 @@ public class FriendList extends Activity {
 
 	}
 
-	ProgressBar horizontalProgressBar;
 	protected Handler friendDownloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
@@ -112,28 +109,13 @@ public class FriendList extends Activity {
 			dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
 			
 			//Fetch the progressbar so that it can be update
-			LayoutInflater inflater = dialog.getLayoutInflater();
-			View layout = inflater.inflate(R.layout.custom_progress_dialog_getting_contacts, null);
-			horizontalProgressBar = (ProgressBar) layout.findViewById(R.id.horizontalProgressBar);
-			horizontalProgressBar.setMax(ContactHandler.getNumberOfContacts(FriendList.this));
-			horizontalProgressBar.setProgress(0);
-
 			matchContactToFriends_async();
 		}
-	};
-
-
-	protected Handler upateContractMappingStatusHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg){
-		}
-		
 	};
 
 	protected Handler friendContactMappingCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-
 			downloadProfilePictures_async();
 			dialog.cancel();
 
@@ -208,7 +190,8 @@ public class FriendList extends Activity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ContactHandler.matchContactsToFriends(friends,upateContractMappingStatusHandler);
+				ContactHandler.matchContactsToFriends(friends,FriendList.this);
+				friendContactMappingCompleteHandler.sendEmptyMessage(0);
 			}
 		}).start();
 

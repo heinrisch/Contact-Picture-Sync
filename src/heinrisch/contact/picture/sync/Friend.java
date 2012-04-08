@@ -11,7 +11,7 @@ public class Friend {
 	private String profilePictureURL;
 	private String uid;
 	private Bitmap profilePicture = null;
-	private String contactID;
+	private String contactID; //Mapping friends with local contacts
 	
 	
 	public String getContactID() {
@@ -24,9 +24,11 @@ public class Friend {
 
 
 	public Friend(JSONObject json) throws JSONException {
-        this.name = json.getString("name");
-        this.profilePictureURL = json.getString("pic_square");
-        this.uid = json.getString("uid");
+        this.name = 				json.getString("name");
+        this.profilePictureURL = 	json.getString("pic_square");
+        this.uid = 					json.getString("uid");
+        
+        contactID = null;
 	}
 
 
@@ -60,6 +62,15 @@ public class Friend {
 	@Override
 	public boolean equals(Object o) {
 		return uid.equals(((Friend)o).uid);
+	}
+
+	public boolean isMatchedWithContact() {
+		return contactID != null;
+	}
+	
+	@Override
+	public String toString() {
+		return "Friend: {" + name + ", " + uid  + ", " + contactID;
 	}
 	
 }
