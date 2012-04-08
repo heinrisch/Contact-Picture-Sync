@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 
@@ -15,6 +16,7 @@ public class ContactHandler {
 
 	ArrayList<Contact> contacts;
 	HashMap<String, Contact> IDToContactMapper;
+	
 
 	public ContactHandler(Context context){
 		this.context = context;
@@ -71,6 +73,18 @@ public class ContactHandler {
 			this.name = name;
 			this.numbers = numbers;
 		}
+	}
+
+	public static void matchContactsToFriends(ArrayList<Friend> friends, Handler upateContractMappingStatusHandler) {
+		
+	}
+
+
+	public static int getNumberOfContacts(Context context) {
+		Cursor people = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		int numberOfContacts = people.getCount();
+		people.close();
+		return numberOfContacts;
 	}
 
 }

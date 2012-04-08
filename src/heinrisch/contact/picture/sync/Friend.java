@@ -11,8 +11,18 @@ public class Friend {
 	private String profilePictureURL;
 	private String uid;
 	private Bitmap profilePicture = null;
+	private String contactID;
 	
 	
+	public String getContactID() {
+		return contactID;
+	}
+
+	public void setContactID(String contactID) {
+		this.contactID = contactID;
+	}
+
+
 	public Friend(JSONObject json) throws JSONException {
         this.name = json.getString("name");
         this.profilePictureURL = json.getString("pic_square");

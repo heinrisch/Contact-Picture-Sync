@@ -10,5 +10,6 @@
     <string name="profile_picture_description">The persons facebook profile picture</string>
     <string name="downloading_friends_text">Getting your friends. Please wait.</string>
     <string name="login_button_description">Facebook login button</string>
+    <string name="getting_your_contacts_text">Getting your contacts..</string>
 
 </resources>

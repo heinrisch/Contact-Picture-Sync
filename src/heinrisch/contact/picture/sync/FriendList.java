@@ -16,10 +16,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.facebook.android.Facebook;
 
@@ -51,7 +53,7 @@ public class FriendList extends Activity {
 		//Show dialog to distract user while downloading friends
 		dialog = new ProgressDialog(this);
 		dialog.show();
-		dialog.setContentView(R.layout.custom_progress_dialog);
+		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
 
@@ -100,17 +102,34 @@ public class FriendList extends Activity {
 
 	}
 
+	ProgressBar horizontalProgressBar;
 	protected Handler friendDownloadCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
 
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 			friendListView.setAdapter(friendListAdapter);
+			dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
+			
+			//Fetch the progressbar so that it can be update
+			LayoutInflater inflater = dialog.getLayoutInflater();
+			View layout = inflater.inflate(R.layout.custom_progress_dialog_getting_contacts, null);
+			horizontalProgressBar = (ProgressBar) layout.findViewById(R.id.horizontalProgressBar);
+			horizontalProgressBar.setMax(ContactHandler.getNumberOfContacts(FriendList.this));
+			horizontalProgressBar.setProgress(0);
 
+			matchContactToFriends_async();
 		}
 	};
-	
-	
+
+
+	protected Handler upateContractMappingStatusHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg){
+		}
+		
+	};
+
 	protected Handler friendContactMappingCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
@@ -181,6 +200,16 @@ public class FriendList extends Activity {
 				return index;
 			}
 
+		}).start();
+
+	}
+
+	protected void matchContactToFriends_async() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				ContactHandler.matchContactsToFriends(friends,upateContractMappingStatusHandler);
+			}
 		}).start();
 
 	}
