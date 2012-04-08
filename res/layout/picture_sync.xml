@@ -2,35 +2,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-   	android:background="@color/white" >
+    android:background="@color/white" >
 
-    <ProgressBar
-        android:id="@+id/progressBar_syncing"
-        style="?android:attr/progressBarStyleHorizontal"
+    <RelativeLayout
+        android:id="@+id/lower_relative_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/downloaded_name"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:padding="10dp" />
+        android:background="@android:color/transparent"
+        android:padding="10dp" >
 
-    <TextView
-        android:id="@+id/downloaded_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       	android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        style="@style/FriendListText"
-        android:padding="10dp"/>
+        <ImageView
+            android:id="@+id/downloaded_picture"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/lower_relative_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/profile_picture_description"
+            android:padding="10dp"
+            android:src="@drawable/mr_unknown" />
 
-    <ImageView
-        android:id="@+id/downloaded_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/downloaded_name"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/mr_unknown"
-        android:padding="10dp"
-        android:contentDescription="@string/profile_picture_description" />
+        <ProgressBar
+            android:id="@+id/progressBar_syncing"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
+        <TextView
+            android:id="@+id/downloaded_name"
+            style="@style/FriendListText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/progressBar_syncing"
+            android:gravity="center_horizontal" />
+    </RelativeLayout>
 
 </RelativeLayout>

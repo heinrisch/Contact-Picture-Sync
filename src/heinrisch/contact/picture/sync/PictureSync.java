@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ public class PictureSync extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.picture_sync);
 
 		syncObjects = new ArrayList<SyncObject>();
@@ -67,10 +68,7 @@ public class PictureSync extends Activity{
 		progressbar.setProgress(0);
 		progressbar.setMax(numberOfContacs);
 
-
 		startSyncingPicutres_async();
-
-
 	}
 
 	private void startSyncingPicutres_async() {
