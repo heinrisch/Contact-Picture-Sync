@@ -9,6 +9,15 @@ import android.graphics.Bitmap;
 public class Friend {
 	private String name;
 	private String profilePictureURL;
+	private String profilePictureBigURL;
+	public String getProfilePictureBigURL() {
+		return profilePictureBigURL;
+	}
+
+	public void setProfilePictureBigURL(String profilePictureBigURL) {
+		this.profilePictureBigURL = profilePictureBigURL;
+	}
+
 	private String uid;
 	private Bitmap profilePicture = null;
 	private String contactID; //Mapping friends with local contacts
@@ -24,10 +33,10 @@ public class Friend {
 
 
 	public Friend(JSONObject json) throws JSONException {
-        this.name = 				json.getString("name");
-        this.profilePictureURL = 	json.getString("pic_square");
-        this.uid = 					json.getString("uid");
-        
+        this.name = 				json.getString(Constants.facebook_name);
+        this.profilePictureURL = 	json.getString(Constants.facebook_pic_square);
+        this.profilePictureBigURL =	json.getString(Constants.facebook_pic_big);
+        this.uid = 					json.getString(Constants.facebook_uid);
         contactID = null;
 	}
 
@@ -70,7 +79,7 @@ public class Friend {
 	
 	@Override
 	public String toString() {
-		return "Friend: {" + name + ", " + uid  + ", " + contactID;
+		return "Friend: {" + name + ", " + uid  + ", " + contactID + "}";
 	}
 	
 }

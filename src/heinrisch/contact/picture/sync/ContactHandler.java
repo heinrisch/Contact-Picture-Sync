@@ -3,10 +3,17 @@ package heinrisch.contact.picture.sync;
 import java.util.ArrayList;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts.Data;
+import android.provider.ContactsContract.RawContacts;
+import android.util.Log;
 
 public class ContactHandler {
 
@@ -43,11 +50,11 @@ public class ContactHandler {
 					break;
 				}
 			}
-			
+
 		}
 		people.close();
 	}
-	
+
 
 
 	public static int getNumberOfContacts(Context context) {
@@ -57,4 +64,62 @@ public class ContactHandler {
 		return numberOfContacts;
 	}
 
+
+	public static Uri getPicture(Context context, String ID){
+		ContentResolver cr = context.getContentResolver();
+		Uri rawContactUri = null;
+		Cursor rawContactCursor =  cr.query(
+				RawContacts.CONTENT_URI, 
+				new String[] {RawContacts._ID}, 
+				RawContacts.CONTACT_ID + " = " + ID, 
+				null, 
+				null);
+		if(!rawContactCursor.isAfterLast()) {
+			rawContactCursor.moveToFirst();
+			rawContactUri = RawContacts.CONTENT_URI.buildUpon().appendPath(""+rawContactCursor.getLong(0)).build();
+		}
+		rawContactCursor.close();
+
+		return rawContactUri;
+	}
+
+
+	public static void setContactPicture(Context context, String ID, Bitmap picture){
+		ContentResolver cr = context.getContentResolver();
+		Uri rawContactUri = getPicture(context, ID);
+		ContentValues values = new ContentValues(); 
+		int photoRow = -1; 
+		String where = ContactsContract.Data.RAW_CONTACT_ID + " == " + 
+				ContentUris.parseId(rawContactUri) + " AND " + Data.MIMETYPE + "=='" + 
+				ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'"; 
+		Cursor cursor = cr.query(
+				ContactsContract.Data.CONTENT_URI, 
+				null, 
+				where, 
+				null, 
+				null); 
+		int idIdx = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID); 
+		if(cursor.moveToFirst()){ 
+			photoRow = cursor.getInt(idIdx); 
+		} 
+		cursor.close(); 
+		values.put(ContactsContract.Data.RAW_CONTACT_ID, 
+				ContentUris.parseId(rawContactUri)); 
+		values.put(ContactsContract.Data.IS_SUPER_PRIMARY, 1); 
+		values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, Tools.bitmapToByteArray(picture)); 
+		values.put(ContactsContract.Data.MIMETYPE, 
+				ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE); 
+		if(photoRow >= 0){ 
+			int a = cr.update(
+					ContactsContract.Data.CONTENT_URI, 
+					values, 
+					ContactsContract.Data._ID + " = " + photoRow, null);
+			Log.e("rows update:", a + "");
+		} else { 
+			cr.insert(
+					ContactsContract.Data.CONTENT_URI, 
+					values); 
+		} 
+	} 
 }
+

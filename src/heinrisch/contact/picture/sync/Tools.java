@@ -1,6 +1,7 @@
 package heinrisch.contact.picture.sync;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 
 public class Tools {
@@ -75,6 +77,12 @@ public class Tools {
 			return BitmapFactory.decodeFile(file.getPath());
 
 		return null;
+	}
+	
+	public static byte[] bitmapToByteArray(Bitmap bitmap){
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+		bitmap.compress(CompressFormat.PNG, 90, baos); 
+		return baos.toByteArray();
 	}
 
 }

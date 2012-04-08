@@ -1,5 +1,7 @@
 package heinrisch.contact.picture.sync;
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,7 +20,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -25,7 +30,7 @@ import com.facebook.android.Facebook;
 
 public class FriendList extends Activity {
 
-	Facebook facebook = new Facebook("424405194241987");
+	Facebook facebook = new Facebook(Constants.facebook_appID);
 
 	Dialog dialog;
 
@@ -55,9 +60,44 @@ public class FriendList extends Activity {
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
 
+
+		setSyncButtonAction();
+
 		//Download all friends
 		downloadFacebookFriends_async();
 
+	}
+
+	private void setSyncButtonAction() {
+		ImageButton sync = (ImageButton) findViewById(R.id.sync_image);
+
+		sync.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				//Pack content and send to picturesync
+				JSONArray jsonFriends = new JSONArray();
+				for(Friend f : friends) {
+					if(f.isMatchedWithContact()){
+						try {
+							JSONObject obj = new JSONObject();
+							obj.put(Constants.facebook_name,f.getName());
+							obj.put(Constants.local_contactID,f.getContactID());
+							obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
+							jsonFriends.put(obj);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				Intent i = new Intent(FriendList.this,PictureSync.class);
+				i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
+				i.putExtra(Constants.bundle_Access_Token, facebook.getAccessToken());
+				i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
+				startActivity(i);
+			}
+		});
 	}
 
 	//Download friends and put them in cache
@@ -69,7 +109,8 @@ public class FriendList extends Activity {
 				//Get all friends with FQL
 				Bundle params = new Bundle();
 				params.putString("method", "fql.query");
-				params.putString("query", "SELECT name, uid, pic_square FROM user WHERE uid IN (select uid2 from friend where uid1=me()) order by name");
+				String elements = Constants.facebook_name + ", " + Constants.facebook_uid + ", " + Constants.facebook_pic_square + ", " + Constants.facebook_pic_big;
+				params.putString("query", "SELECT "+ elements + " FROM user WHERE uid IN (select uid2 from friend where uid1=me()) order by name");
 
 				try {
 					String response = facebook.request(params);
@@ -106,9 +147,9 @@ public class FriendList extends Activity {
 
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 			friendListView.setAdapter(friendListAdapter);
-			
+
 			dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
-			
+
 			//Fetch the progressbar so that it can be update
 			matchContactToFriends_async();
 		}

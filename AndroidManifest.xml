@@ -16,6 +16,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -33,6 +34,11 @@
         <activity
             android:name=".FriendList"
             android:configChanges="keyboardHidden|orientation" />
+        
+        <activity
+            android:name=".PictureSync"
+            android:configChanges="keyboardHidden|orientation" />
+        
     </application>
 
 </manifest>

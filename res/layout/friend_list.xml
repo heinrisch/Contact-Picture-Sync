@@ -14,12 +14,14 @@
         style="@style/ListViewStyle"
         android:layout_above="@+id/sync_image" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sync_image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/sync"
         android:contentDescription="@string/sync_description"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent" />
+
 
 </RelativeLayout>
