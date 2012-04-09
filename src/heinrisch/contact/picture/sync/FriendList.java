@@ -279,9 +279,9 @@ public class FriendList extends Activity {
 			TextView linkFriend = (TextView) dialog.findViewById(R.id.link_friend);
 			TextView unlinkFriend = (TextView) dialog.findViewById(R.id.unlink_friend);
 
-			ImageView image = (ImageView) dialog.findViewById(R.id.friend_click_image);
-			if(friend.hasDownloadedProfilePicture()) image.setImageBitmap(friend.getProfilePicture());
-			else image.setImageResource(R.drawable.mr_unknown);
+			/*ImageView imageView = (ImageView) dialog.findViewById(R.id.friend_click_image);
+			if(friend.hasDownloadedProfilePicture()) imageView.setImageBitmap(friend.getProfilePicture());
+			else imageView.setImageResource(R.drawable.mr_unknown);*/
 
 			unlinkFriend.setOnClickListener(new OnClickListener() {
 

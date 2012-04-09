@@ -1,5 +1,6 @@
 package heinrisch.contact.picture.sync;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.content.ContentResolver;
@@ -8,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -114,5 +116,14 @@ public class ContactHandler {
 					values); 
 		} 
 	} 
+
+	public Bitmap getPhoto(Context context, int contactId) {
+		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+		InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
+		if (input == null) {
+			return null;
+		}
+		return BitmapFactory.decodeStream(input);
+	}
 }
 

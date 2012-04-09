@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
     android:background="@layout/rounded_corners" >
 
-    <RelativeLayout
-        android:id="@+id/lower_relative_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/transparent"
-        android:padding="10dp" >
-
-        <ImageView
-            android:id="@+id/friend_click_image"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_above="@+id/link_friend"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/profile_picture_description"
-            android:src="@drawable/mr_unknown" />
 
         
+ <!--    <ImageView
+            android:id="@+id/friend_click_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:contentDescription="@string/profile_picture_description"
+            android:src="@drawable/mr_unknown"
+            android:scaleType="centerInside" />-->
+    
         <TextView
             android:id="@+id/link_friend"
             android:text="@string/link_friend_text"
             style="@style/FriendListText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/unlink_friend"
             android:gravity="center_horizontal"
             android:padding="10dp" />
         
@@ -40,10 +31,8 @@
             style="@style/FriendListText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:gravity="center_horizontal"
             android:padding="10dp" />
         
-    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
