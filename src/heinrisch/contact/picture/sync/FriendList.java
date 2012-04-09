@@ -5,6 +5,7 @@ package heinrisch.contact.picture.sync;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -16,15 +17,20 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract.Contacts;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.facebook.android.Facebook;
 
@@ -38,6 +44,8 @@ public class FriendList extends Activity {
 
 	FriendListAdapter friendListAdapter;
 	ListView friendListView;
+	
+	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,7 @@ public class FriendList extends Activity {
 		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
+		friendListView.setOnItemClickListener(new FriendClicker());
 
 
 		setSyncButtonAction();
@@ -122,16 +131,15 @@ public class FriendList extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-			
-				
+
 				friendDownloadCompleteHandler.sendEmptyMessage(0);
 			}
 
 
 		}).start();
 	}
-	
+
+
 	private void parseJSONFriendsToArrayList(String jsonFriends, ArrayList<Friend> arraylist) {
 		try {
 			JSONArray array = new JSONArray(jsonFriends);
@@ -239,6 +247,68 @@ public class FriendList extends Activity {
 				friendContactMappingCompleteHandler.sendEmptyMessage(0);
 			}
 		}).start();
+
+	}
+	
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode != Activity.RESULT_OK) return;
+		
+		if(requestCode == Constants.activity_result_CONTACT_PICKER_RESULT && activeFriend != null){
+			Uri result = data.getData(); 
+			String id = result.getLastPathSegment();
+			activeFriend.setContactID(id);
+			activeFriend = null;
+			
+			friendListAdapter.notifyDataSetChanged(); //should only update one post...
+		}
+		
+	}
+
+	class FriendClicker implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View v, int position, long id){
+			final Friend friend = friends.get(position);
+
+			final Dialog dialog = new Dialog(FriendList.this);
+
+			dialog.setContentView(R.layout.friend_click);
+			dialog.setTitle(friend.getName());
+
+			TextView linkFriend = (TextView) dialog.findViewById(R.id.link_friend);
+			TextView unlinkFriend = (TextView) dialog.findViewById(R.id.unlink_friend);
+
+			ImageView image = (ImageView) dialog.findViewById(R.id.friend_click_image);
+			if(friend.hasDownloadedProfilePicture()) image.setImageBitmap(friend.getProfilePicture());
+			else image.setImageResource(R.drawable.mr_unknown);
+
+			unlinkFriend.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					friend.setContactID(null);
+					friendListAdapter.notifyDataSetChanged(); //should only update one post...
+					dialog.cancel();
+				}
+			});
+
+			linkFriend.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					activeFriend = friend; //Save for callback
+					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
+					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
+					dialog.cancel();
+				}
+			});
+			
+
+			
+			dialog.show();
+		}
 
 	}
 

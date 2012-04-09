@@ -103,13 +103,13 @@ public class PictureSync extends Activity{
 	public String getLargeProfilePictureURL(String uid){
 		Bundle params = new Bundle();
 		params.putString("method", "fql.query");
-		params.putString("query", 	"SELECT src_big FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = "+uid+" AND type = 'profile')  limit 1");							
+		params.putString("query", 	"SELECT "+Constants.facebook_src_big+" FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = "+uid+" AND type = 'profile')  limit 1");							
 		String URL = null;
 		try {
 			String response = facebook.request(params);
 			JSONArray array = new JSONArray(response);
 
-			if(array.length() > 0) URL = array.getJSONObject(0).getString("src_big");
+			if(array.length() > 0) URL = array.getJSONObject(0).getString(Constants.facebook_src_big);
 
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

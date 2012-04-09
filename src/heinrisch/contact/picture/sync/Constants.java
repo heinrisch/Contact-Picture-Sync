@@ -21,6 +21,11 @@ public final class Constants {
 	public static final String facebook_uid			= "uid";
 	public static final String facebook_pic_big 	= "pic_big";
 
+	public static final String facebook_src_big 	= "src_big";
+	
 	public static final String local_contactID		= "contactID";
+	
+	
+	public static final int activity_result_CONTACT_PICKER_RESULT = 1004;
 	
 }
