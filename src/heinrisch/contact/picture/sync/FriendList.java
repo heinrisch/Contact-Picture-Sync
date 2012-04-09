@@ -5,7 +5,6 @@ package heinrisch.contact.picture.sync;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -96,7 +95,6 @@ public class FriendList extends Activity {
 							obj.put(Constants.facebook_uid, f.getUID());
 							jsonFriends.put(obj);
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}

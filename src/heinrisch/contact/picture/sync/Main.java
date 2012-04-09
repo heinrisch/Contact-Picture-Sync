@@ -57,6 +57,7 @@ public class Main extends Activity {
 			public void onComplete(Bundle values) {
 				//Save access token on successful login
 				saveFacebookAccess();
+				launchFriendList();
 			}
 
 			@Override
@@ -100,11 +101,6 @@ public class Main extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		facebook.authorizeCallback(requestCode, resultCode, data);
-
-		if(facebook.isSessionValid()){
-			saveFacebookAccess();
-			launchFriendList();
-		}
 	}
 	
 	
