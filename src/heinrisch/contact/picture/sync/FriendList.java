@@ -62,6 +62,7 @@ public class FriendList extends Activity {
 
 		//Show dialog to distract user while downloading friends
 		dialog = new ProgressDialog(this);
+		dialog.setCancelable(false);
 		dialog.show();
 		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
 
