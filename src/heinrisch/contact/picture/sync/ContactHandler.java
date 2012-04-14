@@ -49,6 +49,7 @@ public class ContactHandler {
 				if(f.isMatchedWithContact()) continue;
 				if(f.getName().equals(name)){
 					f.setContactID(ID);
+					f.setContactPicture(getPhoto(context, ID));
 					break;
 				}
 			}
@@ -117,8 +118,8 @@ public class ContactHandler {
 		} 
 	} 
 
-	public Bitmap getPhoto(Context context, int contactId) {
-		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+	public static Bitmap getPhoto(Context context, String contactId) {
+		Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
 		InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
 		if (input == null) {
 			return null;

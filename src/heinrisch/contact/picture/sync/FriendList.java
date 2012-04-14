@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.AvoidXfermode;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -258,6 +259,7 @@ public class FriendList extends Activity {
 			Uri result = data.getData(); 
 			String id = result.getLastPathSegment();
 			activeFriend.setContactID(id);
+			activeFriend.setContactPicture(ContactHandler.getPhoto(this, id));
 			activeFriend = null;
 			
 			friendListAdapter.notifyDataSetChanged(); //should only update one post...

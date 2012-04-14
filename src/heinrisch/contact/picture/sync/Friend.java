@@ -10,6 +10,12 @@ public class Friend {
 	private String name;
 	private String profilePictureURL;
 	private String profilePictureBigURL;
+	private String uid;
+	private Bitmap profilePicture = null;
+	private String contactID; //Mapping friends with local contacts
+	private Bitmap contactPicture = null;
+	
+	
 	public String getProfilePictureBigURL() {
 		return profilePictureBigURL;
 	}
@@ -17,11 +23,6 @@ public class Friend {
 	public void setProfilePictureBigURL(String profilePictureBigURL) {
 		this.profilePictureBigURL = profilePictureBigURL;
 	}
-
-	private String uid;
-	private Bitmap profilePicture = null;
-	private String contactID; //Mapping friends with local contacts
-	
 	
 	public String getContactID() {
 		return contactID;
@@ -80,6 +81,18 @@ public class Friend {
 	@Override
 	public String toString() {
 		return "Friend: {" + name + ", " + uid  + ", " + contactID + "}";
+	}
+
+	public Bitmap getContactPicture() {
+		return contactPicture;
+	}
+
+	public void setContactPicture(Bitmap contactPicture) {
+		this.contactPicture = contactPicture;
+	}
+	
+	public boolean hasContactPicture() {
+		return contactPicture != null;
 	}
 	
 }

@@ -63,6 +63,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		public TextView name;
 		public TextView matchFound;
 		public ImageView profilePicture;
+		public ImageView contactPicture;
 	}
 
 	@Override
@@ -76,6 +77,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 			viewHolder.name = (TextView) layout.findViewById(R.id.real_life_name);
 			viewHolder.matchFound = (TextView) layout.findViewById(R.id.friend_contact_match_found);
 			viewHolder.profilePicture = (ImageView) layout.findViewById(R.id.profile_picture);
+			viewHolder.contactPicture = (ImageView) layout.findViewById(R.id.contact_picture);
 			layout.setTag(viewHolder);
 		}
 
@@ -88,6 +90,13 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}else{
 			holder.profilePicture.setImageBitmap(mr_unknown);
+		}
+		
+		if(friend.hasContactPicture()){
+			holder.contactPicture.setVisibility(ImageView.VISIBLE);
+			holder.contactPicture.setImageBitmap(friend.getContactPicture());
+		}else{
+			holder.contactPicture.setVisibility(ImageView.INVISIBLE);
 		}
 
 		if(friend.isMatchedWithContact()){
