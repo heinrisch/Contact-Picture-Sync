@@ -18,5 +18,13 @@
     <string name="link_friend_text">Manual Link to Contact</string>
     <string name="syncing_header_text">Syncing your pictures</string>
     <string name="syncing_done_text">Syncing is now done. Your contact pictures should have been updated.</string>
-
+    <string name="icon_description">Contact Picture Sync icon</string>
+    <string name="help_header_header_text">This application works in three steps:</string>
+    <string name="help_step1_header_text">1. Connect with Facebook</string>
+	<string name="help_step1_body_text">Press the button above which will take you to the Facebook login. Enter your details and press and press login. This will show you which permissions this app needs. This app will not post anything on your wall or keep any of your information.</string>
+	<string name="help_step2_header_text">2. The Friend List</string>
+	<string name="help_step2_body_text">Next this app will show you a list of all your friends and their facebook profile picture. If there is a match to a name in your contacts, it will show you the current contact picture to the right. This view will also show which entries will be synced. Press any friend for more options. When you are done, press the "Sync Pictures"-button.</string>
+	<string name="help_step3_header_text">3. Syncing pictures</string>
+	<string name="help_step3_body_text">Lastly you will be shown the pictures as they are syncing. During this process the app will replace the current contact picture with that person\'s Facebook profile picture.</string>
+	
 </resources>
