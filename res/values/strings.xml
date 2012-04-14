@@ -11,8 +11,8 @@
     <string name="downloading_friends_text">Getting your friends</string>
     <string name="login_button_description">Facebook login button</string>
     <string name="getting_your_contacts_text">Syncing with your contacts</string>
-    <string name="friend_contact_no_match_found">No match found</string>
-    <string name="friend_contact_match_found">Match found!</string>
+    <string name="friend_contact_no_match_found">Will not sync</string>
+    <string name="friend_contact_match_found">Ready for sync!</string>
     <string name="sync_description">Sync pictures from facebook</string>
     <string name="unlink_friend_text">Unlink</string>
     <string name="link_friend_text">Manual Link to Contact</string>
