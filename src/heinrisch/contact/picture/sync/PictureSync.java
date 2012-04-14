@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -84,10 +86,10 @@ public class PictureSync extends Activity{
 
 					if(largeURL != null)
 						lastPicture = Tools.downloadBitmap(largeURL);
-					
+
 					if(largeURL == null || lastPicture == null)
 						lastPicture = Tools.downloadBitmap(soh.url);
-						
+
 					lastName = soh.name;
 					updateProgressCounterHandler.sendEmptyMessage(0);
 					if(lastPicture != null) ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
@@ -135,7 +137,17 @@ public class PictureSync extends Activity{
 	protected Handler syncingDoneHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			PictureSync.this.finish();
+			AlertDialog.Builder builder = new AlertDialog.Builder(PictureSync.this);
+			builder.setMessage(getString(R.string.syncing_done_text))
+			.setCancelable(false)
+			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					PictureSync.this.finish();
+				}
+			});
+
+
+			builder.create().show();
 		}
 	};
 

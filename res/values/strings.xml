@@ -16,5 +16,7 @@
     <string name="sync_description">Sync pictures from facebook</string>
     <string name="unlink_friend_text">Unlink</string>
     <string name="link_friend_text">Manual Link to Contact</string>
+    <string name="syncing_header_text">Syncing your pictures</string>
+    <string name="syncing_done_text">Syncing is now done. Your contact pictures should have been updated.</string>
 
 </resources>

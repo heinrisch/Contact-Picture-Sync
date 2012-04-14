@@ -5,6 +5,22 @@
     android:background="@color/white" >
 
     <RelativeLayout
+        android:id="@+id/upper_relative_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:padding="10dp" >
+         <TextView
+            style="@style/FriendListText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/syncing_header_text" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/lower_relative_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
