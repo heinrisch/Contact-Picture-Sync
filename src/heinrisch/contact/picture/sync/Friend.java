@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.util.Pair;
 
 
 public class Friend {
@@ -52,7 +53,7 @@ public class Friend {
 
 
 	public void setProfilePic(Bitmap b) {
-		this.profilePicture = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture_Width, Constants.size_Profile_Picture_Heigth, true);
+		this.profilePicture = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture, Constants.size_Profile_Picture, true);
 		
 	}
 
@@ -88,11 +89,27 @@ public class Friend {
 	}
 
 	public void setContactPicture(Bitmap contactPicture) {
-		this.contactPicture = contactPicture;
+		Pair<Integer, Integer> size = getSmallSize(contactPicture);
+		this.contactPicture = Bitmap.createScaledBitmap(contactPicture, size.first, size.second, true);
 	}
 	
 	public boolean hasContactPicture() {
 		return contactPicture != null;
+	}
+	
+	public Pair<Integer, Integer> getSmallSize(Bitmap b){
+		double w = b.getWidth();
+		double h = b.getHeight();
+		
+		if(w > h){
+			double diff = Constants.size_Profile_Picture/w;
+			return new Pair<Integer, Integer>(Constants.size_Profile_Picture, (int) (h*diff));
+		}else if(w < h){
+			double diff = Constants.size_Profile_Picture/h;
+			return new Pair<Integer, Integer>((int) (w*diff), Constants.size_Profile_Picture);
+		}
+		
+		return new Pair<Integer, Integer>(Constants.size_Profile_Picture, Constants.size_Profile_Picture);
 	}
 	
 }

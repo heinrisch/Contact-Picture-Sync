@@ -34,7 +34,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		
 		Resources r = this.getContext().getResources();
 		Bitmap b = BitmapFactory.decodeResource(r, R.drawable.mr_unknown);
-		mr_unknown = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture_Width, Constants.size_Profile_Picture_Heigth, true);
+		mr_unknown = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture, Constants.size_Profile_Picture, true);
 		
 		createKeyIndex();
 	}
