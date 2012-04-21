@@ -5,6 +5,10 @@
           android:showAsAction="withText" />
     
     <item android:id="@+id/menu_smartmatch"
-          android:title="@string/smartmatch"
+          android:title="@string/menu_smartmatch"
+          android:showAsAction="withText" />
+    
+    <item android:id="@+id/menu_syncpictures"
+          android:title="@string/menu_syncpictures"
           android:showAsAction="withText" />
 </menu>

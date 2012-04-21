@@ -46,7 +46,7 @@ public class FriendList extends Activity {
 
 	FriendListAdapter friendListAdapter;
 	ListView friendListView;
-	
+
 	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
 
 	@Override
@@ -82,28 +82,31 @@ public class FriendList extends Activity {
 		downloadFacebookFriends_async();
 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.friendlist_menu, menu);
-	    return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.friendlist_menu, menu);
+		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case R.id.menu_unlink_all:
-	            for(Friend f : friends) f.setContactID(null);
-	            friendListAdapter.notifyDataSetChanged();
-	            return true;
-	        case R.id.menu_smartmatch:
-	        	dialog.show();
-	        	matchContactToFriends_async();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+		case R.id.menu_unlink_all:
+			for(Friend f : friends) f.setContactID(null);
+			friendListAdapter.notifyDataSetChanged();
+			return true;
+		case R.id.menu_smartmatch:
+			dialog.show();
+			matchContactToFriends_async();
+			return true;
+		case R.id.menu_syncpictures:
+			startSyncingActivity();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	private void setSyncButtonAction() {
@@ -114,33 +117,37 @@ public class FriendList extends Activity {
 			@Override
 			public void onClick(View v) {
 				//Pack content and send to picturesync
-				JSONArray jsonFriends = new JSONArray();
-				for(Friend f : friends) {
-					if(f.isMatchedWithContact()){
-						try {
-							JSONObject obj = new JSONObject();
-							obj.put(Constants.facebook_name,f.getName());
-							obj.put(Constants.local_contactID,f.getContactID());
-							obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
-							obj.put(Constants.facebook_uid, f.getUID());
-							jsonFriends.put(obj);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				if(jsonFriends.length() < 1){
-					Tools.showError("No friends selected...", FriendList.this);
-					return;
-				}
-				
-				Intent i = new Intent(FriendList.this,PictureSync.class);
-				i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
-				i.putExtra(Constants.bundle_Access_Token, facebook.getAccessToken());
-				i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
-				startActivity(i);
+				startSyncingActivity();
 			}
 		});
+	}
+
+	protected void startSyncingActivity() {
+		JSONArray jsonFriends = new JSONArray();
+		for(Friend f : friends) {
+			if(f.isMatchedWithContact()){
+				try {
+					JSONObject obj = new JSONObject();
+					obj.put(Constants.facebook_name,f.getName());
+					obj.put(Constants.local_contactID,f.getContactID());
+					obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
+					obj.put(Constants.facebook_uid, f.getUID());
+					jsonFriends.put(obj);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if(jsonFriends.length() < 1){
+			Tools.showError("No friends selected...", FriendList.this);
+			return;
+		}
+
+		Intent i = new Intent(FriendList.this,PictureSync.class);
+		i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
+		i.putExtra(Constants.bundle_Access_Token, facebook.getAccessToken());
+		i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
+		startActivity(i);
 	}
 
 	//Download friends and put them in cache
@@ -282,23 +289,23 @@ public class FriendList extends Activity {
 		}).start();
 
 	}
-	
-	
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(resultCode != Activity.RESULT_OK) return;
-		
+
 		if(requestCode == Constants.activity_result_CONTACT_PICKER_RESULT && activeFriend != null){
 			Uri result = data.getData(); 
 			String id = result.getLastPathSegment();
 			activeFriend.setContactID(id);
 			activeFriend.setContactPicture(ContactHandler.getPhoto(this, id));
 			activeFriend = null;
-			
+
 			friendListAdapter.notifyDataSetChanged(); //should only update one post...
 		}
-		
+
 	}
 
 	class FriendClicker implements OnItemClickListener{
@@ -338,9 +345,9 @@ public class FriendList extends Activity {
 					dialog.cancel();
 				}
 			});
-			
 
-			
+
+
 			dialog.show();
 		}
 
