@@ -52,7 +52,7 @@ public class FriendList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//Don't show title on older android versions
+		//Don't show title on older android versions (after version 10 we need to show it to enable the actionbar)
 		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
 
 		setContentView(R.layout.friend_list);
@@ -96,6 +96,10 @@ public class FriendList extends Activity {
 	        case R.id.menu_unlink_all:
 	            for(Friend f : friends) f.setContactID(null);
 	            friendListAdapter.notifyDataSetChanged();
+	            return true;
+	        case R.id.menu_smartmatch:
+	        	dialog.show();
+	        	matchContactToFriends_async();
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -188,8 +192,6 @@ public class FriendList extends Activity {
 			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
 			friendListView.setAdapter(friendListAdapter);
 
-			dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
-
 			//Fetch the progressbar so that it can be update
 			matchContactToFriends_async();
 		}
@@ -199,6 +201,7 @@ public class FriendList extends Activity {
 		@Override
 		public void handleMessage(Message msg){
 			downloadProfilePictures_async();
+			friendListAdapter.notifyDataSetChanged();
 			dialog.cancel();
 
 		}
@@ -269,6 +272,7 @@ public class FriendList extends Activity {
 	}
 
 	protected void matchContactToFriends_async() {
+		dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {

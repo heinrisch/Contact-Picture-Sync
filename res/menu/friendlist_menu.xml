@@ -3,4 +3,8 @@
     <item android:id="@+id/menu_unlink_all"
           android:title="@string/menu_unlink_all"
           android:showAsAction="withText" />
+    
+    <item android:id="@+id/menu_smartmatch"
+          android:title="@string/smartmatch"
+          android:showAsAction="withText" />
 </menu>

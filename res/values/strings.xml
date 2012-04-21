@@ -27,5 +27,6 @@
 	<string name="help_step3_header_text">3. Syncing pictures</string>
 	<string name="help_step3_body_text">Lastly you will be shown the pictures as they are syncing. During this process the app will replace the current contact picture with that person\'s Facebook profile picture.</string>
 	<string name="menu_unlink_all">Unlink all contacts</string>
+	<string name="smartmatch">Smart Match</string>
 	
 </resources>
