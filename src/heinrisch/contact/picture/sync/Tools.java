@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -83,6 +86,18 @@ public class Tools {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
 		bitmap.compress(CompressFormat.PNG, 0, baos); 
 		return baos.toByteArray();
+	}
+	
+	public static void showError(String Error, Context ctx){
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage(Error)
+		.setCancelable(false)
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+		builder.create().show();
 	}
 
 }

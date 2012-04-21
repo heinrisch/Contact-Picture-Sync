@@ -2,6 +2,7 @@ package heinrisch.contact.picture.sync;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,17 +63,17 @@ public class Main extends Activity {
 
 			@Override
 			public void onFacebookError(FacebookError error) {
-				showError(getString(R.string.login_failed_text) + "\n(" + error.toString() +")");
+				Tools.showError(getString(R.string.login_failed_text) + "\n(" + error.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onError(DialogError e) {
-				showError(getString(R.string.login_failed_text) + "\n(" + e.toString() +")");
+				Tools.showError(getString(R.string.login_failed_text) + "\n(" + e.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onCancel() {
-				showError(getString(R.string.login_failed_text) + "\n(" + getString(R.string.login_canceled_text) +")");
+				Tools.showError(getString(R.string.login_failed_text) + "\n(" + getString(R.string.login_canceled_text) +")",Main.this);
 			}
 		});
 	}
@@ -87,7 +88,7 @@ public class Main extends Activity {
 
 	public void launchFriendList(){
 		if(!facebook.isSessionValid()){
-			showError(getString(R.string.session_no_valid_text));
+			Tools.showError(getString(R.string.session_no_valid_text),this);
 			return;
 		}
 
@@ -103,16 +104,4 @@ public class Main extends Activity {
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 	
-	
-	public void showError(String Error){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(Error)
-		.setCancelable(false)
-		.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-		builder.create().show();
-	}
 }

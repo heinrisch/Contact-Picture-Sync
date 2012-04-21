@@ -84,6 +84,10 @@ public class FriendList extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				if(friends.size() < 1){
+					Tools.showError("No friends selected...", FriendList.this);
+					return;
+				}
 				//Pack content and send to picturesync
 				JSONArray jsonFriends = new JSONArray();
 				for(Friend f : friends) {
