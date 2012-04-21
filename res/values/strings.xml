@@ -26,5 +26,6 @@
 	<string name="help_step2_body_text">Next this app will show you a list of all your friends and their facebook profile picture. If there is a match to a name in your contacts, it will show you the current contact picture to the right. This view will also show which entries will be synced. Press any friend for more options. When you are done, press the "Sync Pictures"-button.</string>
 	<string name="help_step3_header_text">3. Syncing pictures</string>
 	<string name="help_step3_body_text">Lastly you will be shown the pictures as they are syncing. During this process the app will replace the current contact picture with that person\'s Facebook profile picture.</string>
+	<string name="menu_unlink_all">Unlink all contacts</string>
 	
 </resources>

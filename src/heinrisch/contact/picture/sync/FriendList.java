@@ -21,6 +21,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Contacts;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -49,8 +52,11 @@ public class FriendList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//Don't show title on older android versions
+		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
+
 		setContentView(R.layout.friend_list);
+
 		//Get facebook access info
 		final Intent recieve_intent = getIntent();
 		String access_token = recieve_intent.getStringExtra(Constants.bundle_Access_Token);
@@ -76,6 +82,25 @@ public class FriendList extends Activity {
 		downloadFacebookFriends_async();
 
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.friendlist_menu, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.menu_unlink_all:
+	            for(Friend f : friends) f.setContactID(null);
+	            friendListAdapter.notifyDataSetChanged();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
 
 	private void setSyncButtonAction() {
 		ImageButton sync = (ImageButton) findViewById(R.id.sync_image);
@@ -84,10 +109,6 @@ public class FriendList extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if(friends.size() < 1){
-					Tools.showError("No friends selected...", FriendList.this);
-					return;
-				}
 				//Pack content and send to picturesync
 				JSONArray jsonFriends = new JSONArray();
 				for(Friend f : friends) {
@@ -104,6 +125,11 @@ public class FriendList extends Activity {
 						}
 					}
 				}
+				if(jsonFriends.length() < 1){
+					Tools.showError("No friends selected...", FriendList.this);
+					return;
+				}
+				
 				Intent i = new Intent(FriendList.this,PictureSync.class);
 				i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
 				i.putExtra(Constants.bundle_Access_Token, facebook.getAccessToken());
