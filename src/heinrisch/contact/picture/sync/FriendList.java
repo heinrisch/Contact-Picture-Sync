@@ -149,6 +149,12 @@ public class FriendList extends Activity {
 		i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
 		startActivity(i);
 	}
+	
+	private void saveAllFriendInfo() {
+		for(Friend f : friends){
+			Tools.saveStringToFile(f.toJSONSave().toString(), new File(getCacheDir(), f.getUID()));
+		}
+	}
 
 	//Download friends and put them in cache
 	protected void downloadFacebookFriends_async() {
@@ -224,7 +230,7 @@ public class FriendList extends Activity {
 
 					if(f.hasDownloadedProfilePicture()) continue;
 
-					File file = new File(getCacheDir(), f.getUID());
+					File file = new File(getCacheDir(), f.getSaveProfiePictureFileName());
 					Bitmap picture = Tools.getBitmapFromFile(file); 
 
 					if(picture == null){

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Window;
+import android.view.WindowManager.BadTokenException;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ public class PictureSync extends Activity{
 
 	Bitmap lastPicture;
 	String lastName;
+
+	private boolean isSyncing;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -146,8 +149,11 @@ public class PictureSync extends Activity{
 				}
 			});
 
-
-			builder.create().show();
+			try{
+				builder.create().show();
+			}catch (BadTokenException bte) {
+				bte.printStackTrace();
+			}
 		}
 	};
 

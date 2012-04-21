@@ -127,5 +127,13 @@ public class Friend {
 
 		return obj;
 	}
+	
+	public String getSaveJSONFileName(){
+		return "JSON" + uid;
+	}
+	
+	public String getSaveProfiePictureFileName(){
+		return "PIC" + uid;
+	}
 
 }
