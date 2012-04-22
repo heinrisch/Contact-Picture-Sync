@@ -132,16 +132,16 @@ public class FriendList extends Activity {
 
 	public void showSaveDialogAndSync() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Do you want to save your current links between facebook friends and contacts?")
+		builder.setMessage(getString(R.string.save_friends_before_sync_question))
 		.setCancelable(false)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		.setPositiveButton(getString(R.string.yes_text), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				saveAllFriendLinks();
 				startSyncingActivity();
 				dialog.cancel();
 			}
 		})
-		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		.setNegativeButton(getString(R.string.no_text), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				startSyncingActivity();
 				dialog.cancel();
@@ -168,7 +168,7 @@ public class FriendList extends Activity {
 			}
 		}
 		if(jsonFriends.length() < 1){
-			Tools.showError("No friends selected...", FriendList.this);
+			Tools.showError(getString(R.string.no_friend_selected), FriendList.this);
 			return;
 		}
 

@@ -11,7 +11,7 @@
     <string name="downloading_friends_text">Getting your friends</string>
     <string name="login_button_description">Facebook login button</string>
     <string name="getting_your_contacts_text">Syncing with your contacts</string>
-    <string name="friend_contact_no_match_found">Will not sync</string>
+    <string name="friend_contact_no_match_found">No match in Contacts</string>
     <string name="friend_contact_match_found">Ready for sync!</string>
     <string name="sync_description">Sync pictures from facebook</string>
     <string name="unlink_friend_text">Unlink</string>
@@ -31,5 +31,9 @@
 	<string name="menu_syncpictures">Sync Pictures</string>
 	<string name="menu_savelinks">Save Links</string>
 	<string name="menu_loadlinks">Load Links</string>
+	<string name="no_friend_selected">No friends linked with contacts (do a Smart Match to automatically attempt to pair contacts and Facebook friends)</string>
+	<string name="save_friends_before_sync_question">Do you want to save your current links between facebook friends and contacts?</string>
+	<string name="yes_text">Yes</string>
+	<string name="no_text">No</string>
 	
 </resources>
