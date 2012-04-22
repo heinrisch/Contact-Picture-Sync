@@ -109,6 +109,7 @@ public class FriendList extends Activity {
 			return true;
 		case R.id.menu_loadlinks:
 			loadAllFriendLinks();
+			friendListAdapter.notifyDataSetChanged();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -162,7 +163,7 @@ public class FriendList extends Activity {
 		}
 	}
 	
-	private void loadAllFriendLinks() {
+	public void loadAllFriendLinks() {
 		for(Friend f : friends){
 			File file = new File(getCacheDir(), f.getSaveContactIDFileName());
 			String ID = Tools.getStringFromFile(file);
@@ -170,7 +171,6 @@ public class FriendList extends Activity {
 			f.setContactID(ID);
 			ContactHandler.setContactPicture(f,this);
 		}
-		friendListAdapter.notifyDataSetChanged();
 	}
 
 
