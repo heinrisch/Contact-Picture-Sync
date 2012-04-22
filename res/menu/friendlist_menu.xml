@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/menu_smartmatch"
-        android:showAsAction="withText"
-        android:title="@string/menu_smartmatch"/>
-    <item
         android:id="@+id/menu_syncpictures"
         android:showAsAction="withText"
         android:title="@string/menu_syncpictures"/>
+    <item
+        android:id="@+id/menu_smartmatch"
+        android:showAsAction="withText"
+        android:title="@string/menu_smartmatch"/>
     <item
         android:id="@+id/menu_savelinks"
         android:showAsAction="withText"

@@ -159,7 +159,11 @@ public class FriendList extends Activity {
 	
 	private void saveAllFriendLinks() {
 		for(Friend f : friends){
-			Tools.saveStringToFile(f.getContactID(), new File(getCacheDir(), f.getSaveContactIDFileName()));
+			if(f.isMatchedWithContact()){
+				Tools.saveStringToFile(f.getContactID(), new File(getCacheDir(), f.getSaveContactIDFileName()));
+			}else{
+				Tools.saveStringToFile("", new File(getCacheDir(), f.getSaveContactIDFileName()));
+			}
 		}
 	}
 	
@@ -167,7 +171,7 @@ public class FriendList extends Activity {
 		for(Friend f : friends){
 			File file = new File(getCacheDir(), f.getSaveContactIDFileName());
 			String ID = Tools.getStringFromFile(file);
-			if(ID == null) continue;
+			if(ID == null || ID.equalsIgnoreCase("")) continue;
 			f.setContactID(ID);
 			ContactHandler.setContactPicture(f,this);
 		}
