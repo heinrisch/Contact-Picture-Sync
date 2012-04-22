@@ -37,8 +37,6 @@ public class PictureSync extends Activity{
 	Bitmap lastPicture;
 	String lastName;
 
-	private boolean isSyncing;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
