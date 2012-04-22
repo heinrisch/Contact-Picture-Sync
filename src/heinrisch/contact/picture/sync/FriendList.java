@@ -12,8 +12,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -123,10 +125,30 @@ public class FriendList extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				//Pack content and send to picturesync
-				startSyncingActivity();
+				showSaveDialogAndSync();
 			}
 		});
+	}
+
+	public void showSaveDialogAndSync() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Do you want to save your current links between facebook friends and contacts?")
+		.setCancelable(false)
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				saveAllFriendLinks();
+				startSyncingActivity();
+				dialog.cancel();
+			}
+		})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				startSyncingActivity();
+				dialog.cancel();
+			}
+		});
+		builder.create().show();
+
 	}
 
 	protected void startSyncingActivity() {
@@ -156,8 +178,8 @@ public class FriendList extends Activity {
 		i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
 		startActivity(i);
 	}
-	
-	private void saveAllFriendLinks() {
+
+	public void saveAllFriendLinks() {
 		for(Friend f : friends){
 			if(f.isMatchedWithContact()){
 				Tools.saveStringToFile(f.getContactID(), new File(getCacheDir(), f.getSaveContactIDFileName()));
@@ -166,7 +188,7 @@ public class FriendList extends Activity {
 			}
 		}
 	}
-	
+
 	public void loadAllFriendLinks() {
 		for(Friend f : friends){
 			File file = new File(getCacheDir(), f.getSaveContactIDFileName());
