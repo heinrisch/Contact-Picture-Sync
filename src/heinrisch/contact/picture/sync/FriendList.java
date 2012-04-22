@@ -99,7 +99,7 @@ public class FriendList extends Activity {
 			return true;
 		case R.id.menu_smartmatch:
 			dialog.show();
-			matchContactToFriends_async();
+			matchContactToFriends_async(false);
 			return true;
 		case R.id.menu_syncpictures:
 			startSyncingActivity();
@@ -224,7 +224,7 @@ public class FriendList extends Activity {
 			friendListView.setAdapter(friendListAdapter);
 
 			//Fetch the progressbar so that it can be update
-			matchContactToFriends_async();
+			matchContactToFriends_async(true);
 		}
 	};
 
@@ -302,12 +302,13 @@ public class FriendList extends Activity {
 
 	}
 
-	protected void matchContactToFriends_async() {
+	protected void matchContactToFriends_async(final boolean loadLinks) {
 		dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				ContactHandler.matchContactsToFriends(friends,FriendList.this);
+				if(loadLinks) loadAllFriendLinks();
 				friendContactMappingCompleteHandler.sendEmptyMessage(0);
 			}
 		}).start();
