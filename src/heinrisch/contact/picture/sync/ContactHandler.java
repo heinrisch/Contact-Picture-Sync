@@ -49,7 +49,8 @@ public class ContactHandler {
 				if(f.isMatchedWithContact()) continue;
 				if(f.getName().equals(name)){
 					f.setContactID(ID);
-					f.setContactPicture(getPhoto(context, ID));
+					Bitmap contactPhoto = getPhoto(context, ID);
+					if(contactPhoto != null) f.setContactPicture(contactPhoto);
 					break;
 				}
 			}

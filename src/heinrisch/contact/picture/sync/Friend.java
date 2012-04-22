@@ -92,6 +92,7 @@ public class Friend {
 	}
 
 	public void setContactPicture(Bitmap contactPicture) {
+		if(contactPicture == null) return;
 		Pair<Integer, Integer> size = getSmallSize(contactPicture);
 		this.contactPicture = Bitmap.createScaledBitmap(contactPicture, size.first, size.second, true);
 	}
