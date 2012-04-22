@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_unlink_all"
-          android:title="@string/menu_unlink_all"
-          android:showAsAction="withText" />
-    
-    <item android:id="@+id/menu_smartmatch"
-          android:title="@string/menu_smartmatch"
-          android:showAsAction="withText" />
-    
-    <item android:id="@+id/menu_syncpictures"
-          android:title="@string/menu_syncpictures"
-          android:showAsAction="withText" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_smartmatch"
+        android:showAsAction="withText"
+        android:title="@string/menu_smartmatch"/>
+    <item
+        android:id="@+id/menu_syncpictures"
+        android:showAsAction="withText"
+        android:title="@string/menu_syncpictures"/>
+    <item
+        android:id="@+id/menu_savelinks"
+        android:showAsAction="withText"
+        android:title="@string/menu_savelinks"/>
+    <item
+        android:id="@+id/menu_loadlinks"
+        android:showAsAction="withText"
+        android:title="@string/menu_loadlinks"/>
+    <item
+        android:id="@+id/menu_unlink_all"
+        android:showAsAction="withText"
+        android:title="@string/menu_unlink_all"/>
+
 </menu>

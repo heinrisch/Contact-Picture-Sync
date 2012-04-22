@@ -58,6 +58,10 @@ public class ContactHandler {
 		people.close();
 	}
 
+	
+	public static void setContactPicture(Friend f, Context context){
+		f.setContactPicture(getPhoto(context, f.getContactID()));
+	}
 
 
 	public static int getNumberOfContacts(Context context) {

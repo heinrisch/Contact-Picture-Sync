@@ -115,25 +115,28 @@ public class Friend {
 		return new Pair<Integer, Integer>(Constants.size_Profile_Picture, Constants.size_Profile_Picture);
 	}
 
-	//Saving only status
-	public JSONObject toJSONSave(){
+	/*
+	public JSONObject toJSONContactID(){
 		JSONObject obj = new JSONObject();
 		try {
-			if(hasDownloadedProfilePicture()) obj.put(SAVING_PROFILEPICTUREHASH, getProfilePicture().hashCode());
 			if(contactID != null) obj.put(saving_contactid, contactID);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
 		return obj;
+	}*/
+	
+	public String getSaveSyncProfilePictureFileName(){
+		return "PICTUREHASH-" + uid;
 	}
 	
-	public String getSaveJSONFileName(){
-		return "JSON" + uid;
+	public String getSaveContactIDFileName(){
+		return "CONTACTID-" + uid;
 	}
 	
 	public String getSaveProfiePictureFileName(){
-		return "PIC" + uid;
+		return "PIC-" + uid;
 	}
 
 }

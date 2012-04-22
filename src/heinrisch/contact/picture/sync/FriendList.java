@@ -104,6 +104,12 @@ public class FriendList extends Activity {
 		case R.id.menu_syncpictures:
 			startSyncingActivity();
 			return true;
+		case R.id.menu_savelinks:
+			saveAllFriendLinks();
+			return true;
+		case R.id.menu_loadlinks:
+			loadAllFriendLinks();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -150,11 +156,23 @@ public class FriendList extends Activity {
 		startActivity(i);
 	}
 	
-	private void saveAllFriendInfo() {
+	private void saveAllFriendLinks() {
 		for(Friend f : friends){
-			Tools.saveStringToFile(f.toJSONSave().toString(), new File(getCacheDir(), f.getUID()));
+			Tools.saveStringToFile(f.getContactID(), new File(getCacheDir(), f.getSaveContactIDFileName()));
 		}
 	}
+	
+	private void loadAllFriendLinks() {
+		for(Friend f : friends){
+			File file = new File(getCacheDir(), f.getSaveContactIDFileName());
+			String ID = Tools.getStringFromFile(file);
+			if(ID == null) continue;
+			f.setContactID(ID);
+			ContactHandler.setContactPicture(f,this);
+		}
+		friendListAdapter.notifyDataSetChanged();
+	}
+
 
 	//Download friends and put them in cache
 	protected void downloadFacebookFriends_async() {

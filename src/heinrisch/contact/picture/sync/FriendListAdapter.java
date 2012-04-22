@@ -92,7 +92,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 			holder.profilePicture.setImageBitmap(mr_unknown);
 		}
 		
-		if(friend.hasContactPicture()){
+		if(friend.hasContactPicture() && friend.isMatchedWithContact()){
 			holder.contactPicture.setVisibility(ImageView.VISIBLE);
 			holder.contactPicture.setImageBitmap(friend.getContactPicture());
 		}else{

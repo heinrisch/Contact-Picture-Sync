@@ -34,10 +34,11 @@ public class Tools {
 		return bitmap;                
 	}
 
-	public static void saveStringToFile(String friends, File file) {
+	public static void saveStringToFile(String string, File file) {
+		if(string == null) return;
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(friends.getBytes());
+			fos.write(string.getBytes());
 			fos.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
