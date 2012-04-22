@@ -367,6 +367,7 @@ public class FriendList extends Activity {
 		if(resultCode != Activity.RESULT_OK) return;
 
 		if(requestCode == Constants.activity_result_CONTACT_PICKER_RESULT && activeFriend != null){
+			tracker.trackPageView("/onActivityResultContactPicked");
 			Uri result = data.getData(); 
 			String id = result.getLastPathSegment();
 			activeFriend.setContactID(id);
@@ -374,6 +375,8 @@ public class FriendList extends Activity {
 			activeFriend = null;
 
 			friendListAdapter.notifyDataSetChanged(); //should only update one post...
+		}else{
+			tracker.trackPageView("/onActivityResultFailed");
 		}
 
 	}
@@ -400,6 +403,7 @@ public class FriendList extends Activity {
 
 				@Override
 				public void onClick(View v) {
+					tracker.trackPageView("/buttonUnlinkFriend");
 					friend.setContactID(null);
 					friendListAdapter.notifyDataSetChanged(); //should only update one post...
 					dialog.cancel();
@@ -409,6 +413,7 @@ public class FriendList extends Activity {
 			linkFriend.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					tracker.trackPageView("/buttonLinkFriend");
 					activeFriend = friend; //Save for callback
 					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
 					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
