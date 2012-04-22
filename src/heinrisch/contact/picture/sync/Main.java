@@ -65,22 +65,26 @@ public class Main extends Activity {
 			@Override
 			public void onComplete(Bundle values) {
 				//Save access token on successful login
+				tracker.trackPageView("/actionLoginComplete");
 				saveFacebookAccess();
 				launchFriendList();
 			}
 
 			@Override
 			public void onFacebookError(FacebookError error) {
+				tracker.trackPageView("/actionFacebookError");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + error.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onError(DialogError e) {
+				tracker.trackPageView("/actionDialogError");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + e.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onCancel() {
+				tracker.trackPageView("/actionCancel");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + getString(R.string.login_canceled_text) +")",Main.this);
 			}
 		});
