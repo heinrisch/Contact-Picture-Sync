@@ -14,6 +14,7 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class Main extends Activity {
 
@@ -21,13 +22,20 @@ public class Main extends Activity {
 
 	SharedPreferences sharedPreferences;
 
+	GoogleAnalyticsTracker tracker;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
-		BugSenseHandler.setup(this, "2d81e3c5");
+
+		BugSenseHandler.setup(this, Constants.bugsense_appID);
+
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.startNewSession(Constants.analytics_appID, this);
+		tracker.trackPageView("/Main");
+
 
 		//Check if we already have an access token
 		sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -103,5 +111,11 @@ public class Main extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
-	
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
+	}
+
 }

@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.android.Facebook;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class PictureSync extends Activity{
 
@@ -36,12 +37,18 @@ public class PictureSync extends Activity{
 
 	Bitmap lastPicture;
 	String lastName;
+	
+	GoogleAnalyticsTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.picture_sync);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.startNewSession(Constants.analytics_appID, this);
+		tracker.trackPageView("/PictureSync");
 
 		syncObjects = new ArrayList<SyncObject>();
 
@@ -166,5 +173,11 @@ public class PictureSync extends Activity{
 			this.uid = json.getString(Constants.facebook_uid);
 		}
 
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 }

@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.android.Facebook;
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 public class FriendList extends Activity {
 
@@ -50,6 +51,8 @@ public class FriendList extends Activity {
 	ListView friendListView;
 
 	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
+	
+	GoogleAnalyticsTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,10 @@ public class FriendList extends Activity {
 		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
 
 		setContentView(R.layout.friend_list);
+		
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.startNewSession(Constants.analytics_appID, this);
+		tracker.trackPageView("/FriendList");
 
 		//Get facebook access info
 		final Intent recieve_intent = getIntent();
@@ -98,20 +105,25 @@ public class FriendList extends Activity {
 		case R.id.menu_unlink_all:
 			for(Friend f : friends) f.setContactID(null);
 			friendListAdapter.notifyDataSetChanged();
+			tracker.trackPageView("/optionUnlinkAll");
 			return true;
 		case R.id.menu_smartmatch:
 			dialog.show();
 			matchContactToFriends_async(false);
+			tracker.trackPageView("/optionSmartMatch");
 			return true;
 		case R.id.menu_syncpictures:
 			startSyncingActivity();
+			tracker.trackPageView("/optionSyncPictures");
 			return true;
 		case R.id.menu_savelinks:
 			saveAllFriendLinks();
+			tracker.trackPageView("/optionSaveLinks");
 			return true;
 		case R.id.menu_loadlinks:
 			loadAllFriendLinks();
 			friendListAdapter.notifyDataSetChanged();
+			tracker.trackPageView("/optionLoadLinks");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -125,6 +137,7 @@ public class FriendList extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				tracker.trackPageView("/buttonSyncPictures");
 				showSaveDialogAndSync();
 			}
 		});
@@ -221,6 +234,12 @@ public class FriendList extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+				tracker.trackEvent(
+			            "Event",  // Category
+			            "Download Complete",  // Action
+			            "Number of Friends", // Label
+			            friends.size());       // Value
 
 				friendDownloadCompleteHandler.sendEmptyMessage(0);
 			}
@@ -402,6 +421,12 @@ public class FriendList extends Activity {
 			dialog.show();
 		}
 
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		tracker.stopSession();
 	}
 
 }

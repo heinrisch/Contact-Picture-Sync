@@ -12,6 +12,8 @@ public final class Constants {
 	
 	
 	public static final String facebook_appID	= 	"284013631679424";
+	public static final String bugsense_appID	= 	"2d81e3c5";
+	public static final String analytics_appID	= 	"UA-21026732-2";
 	
 	
 	//JSON help
