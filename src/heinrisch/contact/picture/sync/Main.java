@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
@@ -25,6 +26,8 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
+		
+		BugSenseHandler.setup(this, "2d81e3c5");
 
 		//Check if we already have an access token
 		sharedPreferences = getPreferences(MODE_PRIVATE);
