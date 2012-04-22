@@ -103,6 +103,12 @@ public class PictureSync extends Activity{
 					if(lastPicture != null) ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
 				}
 
+				tracker.trackEvent(
+			            "Event",  // Category
+			            "Syncing done",  // Action
+			            "Number of Friends Synced", // Label
+						syncObjects.size());       // Value
+				
 				syncingDoneHandler.sendEmptyMessage(0);
 
 			}
