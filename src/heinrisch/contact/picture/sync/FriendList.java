@@ -37,9 +37,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.android.Facebook;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.apps.analytics.easytracking.EasyTracker;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class FriendList extends Activity {
+public class FriendList extends TrackedActivity {
 
 	Facebook facebook = new Facebook(Constants.facebook_appID);
 
@@ -51,8 +52,6 @@ public class FriendList extends Activity {
 	ListView friendListView;
 
 	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
-	
-	GoogleAnalyticsTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +60,6 @@ public class FriendList extends Activity {
 		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
 
 		setContentView(R.layout.friend_list);
-		
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.startNewSession(Constants.analytics_appID, this);
-		tracker.trackPageView("/FriendList");
 
 		//Get facebook access info
 		final Intent recieve_intent = getIntent();
@@ -105,25 +100,25 @@ public class FriendList extends Activity {
 		case R.id.menu_unlink_all:
 			for(Friend f : friends) f.setContactID(null);
 			friendListAdapter.notifyDataSetChanged();
-			tracker.trackPageView("/optionUnlinkAll");
+			EasyTracker.getTracker().trackPageView("/optionUnlinkAll");
 			return true;
 		case R.id.menu_smartmatch:
 			dialog.show();
 			matchContactToFriends_async(false);
-			tracker.trackPageView("/optionSmartMatch");
+			EasyTracker.getTracker().trackPageView("/optionSmartMatch");
 			return true;
 		case R.id.menu_syncpictures:
 			startSyncingActivity();
-			tracker.trackPageView("/optionSyncPictures");
+			EasyTracker.getTracker().trackPageView("/optionSyncPictures");
 			return true;
 		case R.id.menu_savelinks:
 			saveAllFriendLinks();
-			tracker.trackPageView("/optionSaveLinks");
+			EasyTracker.getTracker().trackPageView("/optionSaveLinks");
 			return true;
 		case R.id.menu_loadlinks:
 			loadAllFriendLinks();
 			friendListAdapter.notifyDataSetChanged();
-			tracker.trackPageView("/optionLoadLinks");
+			EasyTracker.getTracker().trackPageView("/optionLoadLinks");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -137,7 +132,7 @@ public class FriendList extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				tracker.trackPageView("/buttonSyncPictures");
+				EasyTracker.getTracker().trackPageView("/buttonSyncPictures");
 				showSaveDialogAndSync();
 			}
 		});
@@ -235,11 +230,11 @@ public class FriendList extends Activity {
 					e.printStackTrace();
 				}
 				
-				tracker.trackEvent(
+				EasyTracker.getTracker().trackEvent(
 			            "Event",  // Category
 			            "Download Complete",  // Action
 			            "Number of Friends", // Label
-			            friends.size());       // Value
+			            friends.size());
 
 				friendDownloadCompleteHandler.sendEmptyMessage(0);
 			}
@@ -367,7 +362,7 @@ public class FriendList extends Activity {
 		if(resultCode != Activity.RESULT_OK) return;
 
 		if(requestCode == Constants.activity_result_CONTACT_PICKER_RESULT && activeFriend != null){
-			tracker.trackPageView("/onActivityResultContactPicked");
+			EasyTracker.getTracker().trackPageView("/onActivityResultContactPicked");
 			Uri result = data.getData(); 
 			String id = result.getLastPathSegment();
 			activeFriend.setContactID(id);
@@ -376,7 +371,7 @@ public class FriendList extends Activity {
 
 			friendListAdapter.notifyDataSetChanged(); //should only update one post...
 		}else{
-			tracker.trackPageView("/onActivityResultFailed");
+			EasyTracker.getTracker().trackPageView("/onActivityResultFailed");
 		}
 
 	}
@@ -403,7 +398,7 @@ public class FriendList extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					tracker.trackPageView("/buttonUnlinkFriend");
+					EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
 					friend.setContactID(null);
 					friendListAdapter.notifyDataSetChanged(); //should only update one post...
 					dialog.cancel();
@@ -413,7 +408,7 @@ public class FriendList extends Activity {
 			linkFriend.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					tracker.trackPageView("/buttonLinkFriend");
+					EasyTracker.getTracker().trackPageView("/buttonLinkFriend");
 					activeFriend = friend; //Save for callback
 					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
 					contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -427,12 +422,6 @@ public class FriendList extends Activity {
 			dialog.show();
 		}
 
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		tracker.stopSession();
 	}
 
 }

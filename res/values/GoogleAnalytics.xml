@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="ga_api_key">UA-21026732-2</string>
+
+  <bool name="ga_debug">false</bool> <!-- turn false before release -->
+  <bool name="ga_dryRun">false</bool> <!-- turn false before release -->
+  <bool name="ga_auto_activity_tracking">true</bool>
+  
+  <integer name="ga_dispatchPeriod">20</integer>
+  
+  <!-- We want to see simple, descriptive names in the Google Analytics reports
+       instead of the canonical name for each Activity. -->
+  <string name="heinrisch.contact.picture.sync.FriendList">FriendList</string>
+  <string name="heinrisch.contact.picture.sync.Main">Main</string>
+  <string name="heinrisch.contact.picture.sync.PictureSync">PictureSync</string>
+</resources>

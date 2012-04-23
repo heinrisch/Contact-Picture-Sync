@@ -1,6 +1,5 @@
 package heinrisch.contact.picture.sync;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,15 +13,14 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.apps.analytics.easytracking.EasyTracker;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class Main extends Activity {
+public class Main extends TrackedActivity {
 
 	Facebook facebook = new Facebook(Constants.facebook_appID);
 
 	SharedPreferences sharedPreferences;
-
-	GoogleAnalyticsTracker tracker;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -31,11 +29,6 @@ public class Main extends Activity {
 		setContentView(R.layout.main);
 
 		BugSenseHandler.setup(this, Constants.bugsense_appID);
-
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.startNewSession(Constants.analytics_appID, 20, this);
-		tracker.trackPageView("/Main");
-
 
 		//Check if we already have an access token
 		sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -65,26 +58,26 @@ public class Main extends Activity {
 			@Override
 			public void onComplete(Bundle values) {
 				//Save access token on successful login
-				tracker.trackPageView("/actionLoginComplete");
+				EasyTracker.getTracker().trackPageView("/actionLoginComplete");
 				saveFacebookAccess();
 				launchFriendList();
 			}
 
 			@Override
 			public void onFacebookError(FacebookError error) {
-				tracker.trackPageView("/actionFacebookError");
+				EasyTracker.getTracker().trackPageView("/actionFacebookError");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + error.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onError(DialogError e) {
-				tracker.trackPageView("/actionDialogError");
+				EasyTracker.getTracker().trackPageView("/actionDialogError");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + e.toString() +")",Main.this);
 			}
 
 			@Override
 			public void onCancel() {
-				tracker.trackPageView("/actionCancel");
+				EasyTracker.getTracker().trackPageView("/actionCancel");
 				Tools.showError(getString(R.string.login_failed_text) + "\n(" + getString(R.string.login_canceled_text) +")",Main.this);
 			}
 		});
@@ -116,10 +109,5 @@ public class Main extends Activity {
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		tracker.stopSession();
-	}
 
 }

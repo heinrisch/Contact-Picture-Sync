@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,9 +22,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.android.Facebook;
-import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+import com.google.android.apps.analytics.easytracking.EasyTracker;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
-public class PictureSync extends Activity{
+public class PictureSync extends TrackedActivity{
 
 	Facebook facebook = new Facebook(Constants.facebook_appID);
 	ArrayList<SyncObject> syncObjects;
@@ -37,18 +37,12 @@ public class PictureSync extends Activity{
 
 	Bitmap lastPicture;
 	String lastName;
-	
-	GoogleAnalyticsTracker tracker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.picture_sync);
-		
-		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.startNewSession(Constants.analytics_appID, this);
-		tracker.trackPageView("/PictureSync");
 
 		syncObjects = new ArrayList<SyncObject>();
 
@@ -103,7 +97,7 @@ public class PictureSync extends Activity{
 					if(lastPicture != null) ContactHandler.setContactPicture(PictureSync.this, soh.contactID, lastPicture);
 				}
 
-				tracker.trackEvent(
+				EasyTracker.getTracker().trackEvent(
 			            "Event",  // Category
 			            "Syncing done",  // Action
 			            "Number of Friends Synced", // Label
@@ -181,9 +175,4 @@ public class PictureSync extends Activity{
 
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		tracker.stopSession();
-	}
 }
