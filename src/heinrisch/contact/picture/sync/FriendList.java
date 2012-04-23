@@ -143,16 +143,16 @@ public class FriendList extends TrackedActivity {
 		builder.setMessage(getString(R.string.save_friends_before_sync_question))
 		.setCancelable(false)
 		.setPositiveButton(getString(R.string.yes_text), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
+			public void onClick(DialogInterface dialogIn, int id) {
 				saveAllFriendLinks();
 				startSyncingActivity();
-				dialog.cancel();
+				dialogIn.cancel();
 			}
 		})
 		.setNegativeButton(getString(R.string.no_text), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
+			public void onClick(DialogInterface dialogIn, int id) {
 				startSyncingActivity();
-				dialog.cancel();
+				dialogIn.cancel();
 			}
 		});
 		builder.create().show();
@@ -229,12 +229,12 @@ public class FriendList extends TrackedActivity {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				EasyTracker.getTracker().trackEvent(
-			            "Event",  // Category
-			            "Download Complete",  // Action
-			            "Number of Friends", // Label
-			            friends.size());
+						"Event",  // Category
+						"Download Complete",  // Action
+						"Number of Friends", // Label
+						friends.size());
 
 				friendDownloadCompleteHandler.sendEmptyMessage(0);
 			}
@@ -273,7 +273,12 @@ public class FriendList extends TrackedActivity {
 		public void handleMessage(Message msg){
 			downloadProfilePictures_async();
 			friendListAdapter.notifyDataSetChanged();
-			dialog.cancel();
+
+			try{
+				dialog.cancel();
+			}catch (IllegalArgumentException iae) {
+				iae.printStackTrace();
+			}
 
 		}
 	};
@@ -382,13 +387,13 @@ public class FriendList extends TrackedActivity {
 		public void onItemClick(AdapterView<?> arg0, View v, int position, long id){
 			final Friend friend = friends.get(position);
 
-			final Dialog dialog = new Dialog(FriendList.this);
+			final Dialog dia = new Dialog(FriendList.this);
 
-			dialog.setContentView(R.layout.friend_click);
-			dialog.setTitle(friend.getName());
+			dia.setContentView(R.layout.friend_click);
+			dia.setTitle(friend.getName());
 
-			TextView linkFriend = (TextView) dialog.findViewById(R.id.link_friend);
-			TextView unlinkFriend = (TextView) dialog.findViewById(R.id.unlink_friend);
+			TextView linkFriend = (TextView) dia.findViewById(R.id.link_friend);
+			TextView unlinkFriend = (TextView) dia.findViewById(R.id.unlink_friend);
 
 			/*ImageView imageView = (ImageView) dialog.findViewById(R.id.friend_click_image);
 			if(friend.hasDownloadedProfilePicture()) imageView.setImageBitmap(friend.getProfilePicture());
@@ -401,7 +406,7 @@ public class FriendList extends TrackedActivity {
 					EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
 					friend.setContactID(null);
 					friendListAdapter.notifyDataSetChanged(); //should only update one post...
-					dialog.cancel();
+					dia.cancel();
 				}
 			});
 
@@ -413,13 +418,13 @@ public class FriendList extends TrackedActivity {
 					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
 					contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
-					dialog.cancel();
+					dia.cancel();
 				}
 			});
 
 
 
-			dialog.show();
+			dia.show();
 		}
 
 	}

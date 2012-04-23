@@ -8,8 +8,6 @@
   
   <integer name="ga_dispatchPeriod">20</integer>
   
-  <!-- We want to see simple, descriptive names in the Google Analytics reports
-       instead of the canonical name for each Activity. -->
   <string name="heinrisch.contact.picture.sync.FriendList">FriendList</string>
   <string name="heinrisch.contact.picture.sync.Main">Main</string>
   <string name="heinrisch.contact.picture.sync.PictureSync">PictureSync</string>
