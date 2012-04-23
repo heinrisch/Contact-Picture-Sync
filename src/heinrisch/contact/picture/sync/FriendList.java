@@ -416,6 +416,7 @@ public class FriendList extends Activity {
 					tracker.trackPageView("/buttonLinkFriend");
 					activeFriend = friend; //Save for callback
 					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
+					contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
 					dialog.cancel();
 				}

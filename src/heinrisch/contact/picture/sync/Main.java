@@ -33,7 +33,7 @@ public class Main extends Activity {
 		BugSenseHandler.setup(this, Constants.bugsense_appID);
 
 		tracker = GoogleAnalyticsTracker.getInstance();
-		tracker.startNewSession(Constants.analytics_appID, this);
+		tracker.startNewSession(Constants.analytics_appID, 20, this);
 		tracker.trackPageView("/Main");
 
 
