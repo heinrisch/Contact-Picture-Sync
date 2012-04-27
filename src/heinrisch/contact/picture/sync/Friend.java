@@ -18,6 +18,7 @@ public class Friend {
 	private Bitmap profilePicture = null;
 	private String contactID; //Mapping friends with local contacts
 	private Bitmap contactPicture = null;
+	private int profilePictureSyncHash; //Hashing profilepicture(small) when syncing picture to keep track of which pictures have been synced.
 
 
 	public String getProfilePictureBigURL() {
@@ -100,6 +101,28 @@ public class Friend {
 	public boolean hasContactPicture() {
 		return contactPicture != null;
 	}
+	
+	public void savePictureHash(){
+		profilePictureSyncHash = profilePicture.hashCode();
+	}
+	
+	public boolean hasSyncedPicture(){
+		if(profilePicture == null) return false;
+		return profilePictureSyncHash == profilePicture.hashCode();
+	}
+	
+	public String getSaveSyncProfilePictureFileName(){
+		return "PICTUREHASH-" + uid;
+	}
+	
+	public String getSaveContactIDFileName(){
+		return "CONTACTID-" + uid;
+	}
+	
+	public String getSaveProfiePictureFileName(){
+		return "PIC-" + uid;
+	}
+	
 
 	public Pair<Integer, Integer> getSmallSize(Bitmap b){
 		double w = b.getWidth();
@@ -116,28 +139,9 @@ public class Friend {
 		return new Pair<Integer, Integer>(Constants.size_Profile_Picture, Constants.size_Profile_Picture);
 	}
 
-	/*
-	public JSONObject toJSONContactID(){
-		JSONObject obj = new JSONObject();
-		try {
-			if(contactID != null) obj.put(saving_contactid, contactID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		return obj;
-	}*/
-	
-	public String getSaveSyncProfilePictureFileName(){
-		return "PICTUREHASH-" + uid;
-	}
-	
-	public String getSaveContactIDFileName(){
-		return "CONTACTID-" + uid;
-	}
-	
-	public String getSaveProfiePictureFileName(){
-		return "PIC-" + uid;
+	public void unlink() {
+		contactID = null;
+		profilePictureSyncHash = 0;
 	}
 
 }

@@ -98,7 +98,7 @@ public class FriendList extends TrackedActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_unlink_all:
-			for(Friend f : friends) f.setContactID(null);
+			for(Friend f : friends) f.unlink();
 			friendListAdapter.notifyDataSetChanged();
 			EasyTracker.getTracker().trackPageView("/optionUnlinkAll");
 			return true;
@@ -184,7 +184,7 @@ public class FriendList extends TrackedActivity {
 		i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
 		i.putExtra(Constants.bundle_Access_Token, facebook.getAccessToken());
 		i.putExtra(Constants.bundle_Access_Expires, facebook.getAccessExpires());
-		startActivity(i);
+		startActivityForResult(i, Constants.activity_result_PICTURE_SYNC_RESULT);
 	}
 
 	public void saveAllFriendLinks() {
@@ -299,6 +299,8 @@ public class FriendList extends TrackedActivity {
 					if(picture == null){
 						picture = Tools.downloadBitmap(f.getProfilePictureURL());
 					}
+
+
 					if(picture != null){
 						f.setProfilePic(picture);
 						Tools.storePictureToFile(file, picture);
@@ -375,6 +377,12 @@ public class FriendList extends TrackedActivity {
 			activeFriend = null;
 
 			friendListAdapter.notifyDataSetChanged(); //should only update one post...
+		}else if(requestCode == Constants.activity_result_PICTURE_SYNC_RESULT){
+			for(Friend f : friends){
+				if(f.isMatchedWithContact()){
+					f.savePictureHash();
+				}
+			}
 		}else{
 			EasyTracker.getTracker().trackPageView("/onActivityResultFailed");
 		}
@@ -404,7 +412,7 @@ public class FriendList extends TrackedActivity {
 				@Override
 				public void onClick(View v) {
 					EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
-					friend.setContactID(null);
+					friend.unlink();
 					friendListAdapter.notifyDataSetChanged(); //should only update one post...
 					dia.cancel();
 				}

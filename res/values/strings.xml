@@ -35,5 +35,6 @@
 	<string name="save_friends_before_sync_question">Do you want to save your current links between facebook friends and contacts?</string>
 	<string name="yes_text">Yes</string>
 	<string name="no_text">No</string>
+	<string name="friend_contact_synced">Has been synced!</string>
 	
 </resources>

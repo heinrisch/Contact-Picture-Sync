@@ -150,6 +150,7 @@ public class PictureSync extends TrackedActivity{
 			.setCancelable(false)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
+					setResult(RESULT_OK, new Intent());
 					PictureSync.this.finish();
 				}
 			});

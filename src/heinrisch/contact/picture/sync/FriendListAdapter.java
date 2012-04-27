@@ -23,7 +23,7 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 	//Fastscoll variables
 	HashMap<Character, Integer> letterIndex;
 	Character[] sections;
-	
+
 	//Picture for unknown people
 	Bitmap mr_unknown;
 
@@ -31,11 +31,11 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		super(context, R.layout.list_item_friend, friends);
 		this.context = context;
 		this.friends = friends;
-		
+
 		Resources r = this.getContext().getResources();
 		Bitmap b = BitmapFactory.decodeResource(r, R.drawable.mr_unknown);
 		mr_unknown = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture, Constants.size_Profile_Picture, true);
-		
+
 		createKeyIndex();
 	}
 
@@ -45,13 +45,13 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		for (int i = friends.size()-1; i >0; i--) {
 			letterIndex.put(friends.get(i).getName().charAt(0), i); 
 		}
-		
+
 		sections = letterIndex.keySet().toArray(new Character[letterIndex.size()]);
-		
+
 		Arrays.sort(sections);
 	}
 
-	
+
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();
@@ -85,21 +85,24 @@ public class FriendListAdapter extends ArrayAdapter<Friend> implements SectionIn
 		ViewHolder holder = (ViewHolder) layout.getTag();
 
 		holder.name.setText(friend.getName());
-		
+
 		if(friend.hasDownloadedProfilePicture()){
 			holder.profilePicture.setImageBitmap(friend.getProfilePicture());
 		}else{
 			holder.profilePicture.setImageBitmap(mr_unknown);
 		}
-		
+
 		if(friend.hasContactPicture() && friend.isMatchedWithContact()){
 			holder.contactPicture.setVisibility(ImageView.VISIBLE);
 			holder.contactPicture.setImageBitmap(friend.getContactPicture());
 		}else{
 			holder.contactPicture.setVisibility(ImageView.INVISIBLE);
 		}
-
-		if(friend.isMatchedWithContact()){
+		
+		if(friend.hasSyncedPicture()){
+			holder.matchFound.setText(getContext().getString(R.string.friend_contact_synced));
+			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.green));
+		}else if(friend.isMatchedWithContact()){
 			holder.matchFound.setText(getContext().getString(R.string.friend_contact_match_found));
 			holder.matchFound.setTextColor(getContext().getResources().getColor(R.color.green));
 		}else{

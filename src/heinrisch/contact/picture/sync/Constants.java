@@ -21,6 +21,7 @@ public final class Constants {
 	public static final String facebook_name		= "name";
 	public static final String facebook_uid			= "uid";
 	public static final String facebook_pic_big 	= "pic_big";
+	public static final String facebook_pic_hash 	= "pic_hash";
 
 	public static final String facebook_src_big 	= "src_big";
 	
@@ -28,5 +29,6 @@ public final class Constants {
 	
 	
 	public static final int activity_result_CONTACT_PICKER_RESULT = 1004;
+	public static final int activity_result_PICTURE_SYNC_RESULT = 1008;
 	
 }
