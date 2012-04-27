@@ -35,6 +35,10 @@ public class ContactHandler {
 
 	public static void matchContactsToFriends(ArrayList<Friend> friends, Context context) {
 		Cursor people = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		if(people == null){
+			Log.e("ContactHandler", "Could not find contacts...?");
+			return;
+		}
 		while(people.moveToNext()) {
 			String ID = null,name = null;
 			int columnIndex = people.getColumnIndex(ContactsContract.Contacts._ID);
