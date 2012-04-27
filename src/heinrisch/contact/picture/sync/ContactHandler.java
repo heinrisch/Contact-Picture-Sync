@@ -8,6 +8,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDiskIOException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -63,7 +64,7 @@ public class ContactHandler {
 		people.close();
 	}
 
-	
+
 	public static void setContactPicture(Friend f, Context context){
 		f.setContactPicture(getPhoto(context, f.getContactID()));
 	}
@@ -115,16 +116,21 @@ public class ContactHandler {
 		values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, Tools.bitmapToByteArray(picture)); 
 		values.put(ContactsContract.Data.MIMETYPE, 
 				ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE); 
-		if(photoRow >= 0){ 
-			cr.update(
-					ContactsContract.Data.CONTENT_URI, 
-					values, 
-					ContactsContract.Data._ID + " = " + photoRow, null);
-		} else { 
-			cr.insert(
-					ContactsContract.Data.CONTENT_URI, 
-					values); 
-		} 
+		try{
+			if(photoRow >= 0){ 
+				cr.update(
+						ContactsContract.Data.CONTENT_URI, 
+						values, 
+						ContactsContract.Data._ID + " = " + photoRow, null);
+			} else { 
+				cr.insert(
+						ContactsContract.Data.CONTENT_URI, 
+						values); 
+			} 
+		}catch(SQLiteDiskIOException dIOe){
+			//TODO: should show this to the user..
+			dIOe.printStackTrace();
+		}
 	} 
 
 	public static Bitmap getPhoto(Context context, String contactId) {
