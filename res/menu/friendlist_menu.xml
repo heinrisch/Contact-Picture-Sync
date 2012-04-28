@@ -21,5 +21,9 @@
         android:id="@+id/menu_unlink_all"
         android:showAsAction="withText"
         android:title="@string/menu_unlink_all"/>
+    <item
+        android:id="@+id/menu_recommend"
+        android:showAsAction="withText"
+        android:title="@string/menu_recommend_on_wall"/>
 
 </menu>

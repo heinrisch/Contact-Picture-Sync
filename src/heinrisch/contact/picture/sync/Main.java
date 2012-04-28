@@ -110,5 +110,4 @@ public class Main extends TrackedActivity {
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 
-
 }

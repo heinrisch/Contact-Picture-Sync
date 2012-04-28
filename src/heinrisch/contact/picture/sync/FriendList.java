@@ -120,6 +120,9 @@ public class FriendList extends TrackedActivity {
 			friendListAdapter.notifyDataSetChanged();
 			EasyTracker.getTracker().trackPageView("/optionLoadLinks");
 			return true;
+		case R.id.menu_recommend:
+			Tools.advertiseOnFacebookWall(facebook, this);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -384,6 +387,9 @@ public class FriendList extends TrackedActivity {
 				}
 			}
 			friendListAdapter.notifyDataSetChanged();
+			if(data.getBooleanExtra(Constants.bundle_advertise, false)){
+				Tools.advertiseOnFacebookWall(facebook, this);
+			}
 		}else{
 			EasyTracker.getTracker().trackPageView("/onActivityResultFailed");
 		}

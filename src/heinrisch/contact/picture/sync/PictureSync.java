@@ -142,19 +142,28 @@ public class PictureSync extends TrackedActivity{
 		}
 	};
 
+
 	protected Handler syncingDoneHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
 			AlertDialog.Builder builder = new AlertDialog.Builder(PictureSync.this);
 			builder.setMessage(getString(R.string.syncing_done_text))
 			.setCancelable(false)
-			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			.setPositiveButton(getString(R.string.yes_text), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					Intent i = new Intent();
+					i.putExtra(Constants.bundle_advertise, true);
+					setResult(RESULT_OK, i);
+					PictureSync.this.finish();
+				}
+			})
+			.setNegativeButton(getString(R.string.no_text), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					setResult(RESULT_OK, new Intent());
 					PictureSync.this.finish();
 				}
 			});
-
+			
 			try{
 				builder.create().show();
 			}catch (BadTokenException bte) {
@@ -162,7 +171,6 @@ public class PictureSync extends TrackedActivity{
 			}
 		}
 	};
-
 
 	class SyncObject{
 		String name,contactID,url,uid;

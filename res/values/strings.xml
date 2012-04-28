@@ -8,14 +8,14 @@
     <string name="profile_picture_description">The persons facebook profile picture</string>
     <string name="downloading_friends_text">Getting your friends</string>
     <string name="login_button_description">Facebook login button</string>
-    <string name="getting_your_contacts_text">Syncing with your contacts</string>
+    <string name="getting_your_contacts_text">Matching with your contacts</string>
     <string name="friend_contact_no_match_found">No match in Contacts</string>
     <string name="friend_contact_match_found">Ready for sync</string>
     <string name="sync_description">Sync pictures from facebook</string>
     <string name="unlink_friend_text">Unlink</string>
     <string name="link_friend_text">Manual Link to Contact</string>
     <string name="syncing_header_text">Syncing your pictures</string>
-    <string name="syncing_done_text">Syncing is now done. Your contact pictures should have been updated.</string>
+    <string name="syncing_done_text">Syncing is now done. Your contact pictures should have been updated.\n\nWould you like to post a message about this app on Facebook? (You will get to choose what you want to write) </string>
     <string name="icon_description">Contact Picture Sync icon</string>
     <string name="help_header_header_text">This application works in three steps:</string>
     <string name="help_step1_header_text">1. Connect with Facebook</string>
@@ -37,5 +37,6 @@
 	<string name="wall_post_msg">I synced my Android contact pictures with Contact Picture Sync!</string>
 	<string name="play_store_link">https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync</string>
 	<string name="play_store_image">https://lh4.ggpht.com/lYoM6LIZDsmIHAAxaHuO5D_CIcXTeluVCUHXKRtQNa2jaC_rpewCgudnqe2UJsJZgls=w124</string>
+	<string name="menu_recommend_on_wall">Recommend this App</string>
 	
 </resources>
