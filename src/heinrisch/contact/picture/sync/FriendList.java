@@ -383,6 +383,7 @@ public class FriendList extends TrackedActivity {
 					f.savePictureHash();
 				}
 			}
+			friendListAdapter.notifyDataSetChanged();
 		}else{
 			EasyTracker.getTracker().trackPageView("/onActivityResultFailed");
 		}

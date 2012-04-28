@@ -51,8 +51,9 @@ public class Main extends TrackedActivity {
 
 			}
 		});
-
+		
 	}
+
 	protected void authorizeWithFacebook() {
 		facebook.authorize(this, new String[] { "friends_photos" }, new DialogListener() {
 			@Override

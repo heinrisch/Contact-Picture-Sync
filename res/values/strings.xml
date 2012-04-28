@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, Main!</string>
     <string name="app_name">Contact Picture Sync</string>
     <string name="login_button">Login to Facebook</string>
     <string name="login_failed_text">Login to Facebook failed</string>
@@ -12,7 +10,7 @@
     <string name="login_button_description">Facebook login button</string>
     <string name="getting_your_contacts_text">Syncing with your contacts</string>
     <string name="friend_contact_no_match_found">No match in Contacts</string>
-    <string name="friend_contact_match_found">Ready for sync!</string>
+    <string name="friend_contact_match_found">Ready for sync</string>
     <string name="sync_description">Sync pictures from facebook</string>
     <string name="unlink_friend_text">Unlink</string>
     <string name="link_friend_text">Manual Link to Contact</string>
@@ -36,5 +34,8 @@
 	<string name="yes_text">Yes</string>
 	<string name="no_text">No</string>
 	<string name="friend_contact_synced">Has been synced!</string>
+	<string name="wall_post_msg">I synced my Android contact pictures with Contact Picture Sync!</string>
+	<string name="play_store_link">https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync</string>
+	<string name="play_store_image">https://lh4.ggpht.com/lYoM6LIZDsmIHAAxaHuO5D_CIcXTeluVCUHXKRtQNa2jaC_rpewCgudnqe2UJsJZgls=w124</string>
 	
 </resources>

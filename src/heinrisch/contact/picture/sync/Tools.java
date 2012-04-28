@@ -17,6 +17,12 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
+
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
 
 public class Tools {
 	public static Bitmap downloadBitmap(String url) {      
@@ -99,6 +105,39 @@ public class Tools {
 			}
 		});
 		builder.create().show();
+	}
+	
+	public static void advertiseOnFacebookWall(Facebook facebook, Context context){
+		Bundle parameters = new Bundle();
+
+		parameters.putString("description", context.getString(R.string.wall_post_msg));
+		
+		parameters.putString("link", context.getString(R.string.play_store_link));
+		
+		parameters.putString("picture", context.getString(R.string.play_store_image));
+
+
+		facebook.dialog(context,"stream.publish",parameters,new DialogListener() {
+
+			@Override
+			public void onFacebookError(FacebookError e) {
+				e.toString();
+			}
+
+			@Override
+			public void onError(DialogError e) {
+				e.toString();
+			}
+
+			@Override
+			public void onComplete(Bundle values) {
+			}
+
+			@Override
+			public void onCancel() {
+
+			}
+		});
 	}
 
 }
