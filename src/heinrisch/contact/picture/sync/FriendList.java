@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -99,7 +97,7 @@ public class FriendList extends TrackedActivity {
 			EasyTracker.getTracker().trackPageView("/optionSmartMatch");
 			return true;
 		case R.id.menu_syncpictures:
-			startSyncingActivity();
+			startSyncingActivity(null);
 			EasyTracker.getTracker().trackPageView("/optionSyncPictures");
 			return true;
 		case R.id.menu_savelinks:
@@ -133,43 +131,55 @@ public class FriendList extends TrackedActivity {
 	}
 
 	public void showSaveDialogAndSync() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(getString(R.string.save_friends_before_sync_question))
-		.setCancelable(false)
-		.setPositiveButton(getString(R.string.yes_text), new DialogInterface.OnClickListener() {
+		Builder b = new Builder(this);
+		b.setMessage(getString(R.string.save_friends_before_sync_question));
+		b.setCancelable(false);
+		b.setPositiveButton(R.string.yes_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialogIn, int id) {
 				saveAllFriendLinks();
-				startSyncingActivity();
-				dialogIn.cancel();
-			}
-		})
-		.setNegativeButton(getString(R.string.no_text), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialogIn, int id) {
-				startSyncingActivity();
-				dialogIn.cancel();
+				startSyncingActivity(null);
 			}
 		});
-		builder.create().show();
+		b.setNegativeButton(R.string.no_text, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialogIn, int id) {
+				startSyncingActivity(null);
+			}
+		});
+		b.show();
 
 	}
 
 	@SuppressWarnings("deprecation")
-	protected void startSyncingActivity() {
+	protected void startSyncingActivity(Friend friend) {
 		JSONArray jsonFriends = new JSONArray();
-		for(Friend f : friends) {
-			if(f.isMatchedWithContact()){
-				try {
-					JSONObject obj = new JSONObject();
-					obj.put(Constants.facebook_name,f.getName());
-					obj.put(Constants.local_contactID,f.getContactID());
-					obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
-					obj.put(Constants.facebook_uid, f.getUID());
-					jsonFriends.put(obj);
-				} catch (JSONException e) {
-					e.printStackTrace();
+		if (friend == null) {
+			for(Friend f : friends) {
+				if(f.isMatchedWithContact()){
+					try {
+						JSONObject obj = new JSONObject();
+						obj.put(Constants.facebook_name, f.getName());
+						obj.put(Constants.local_contactID, f.getContactID());
+						obj.put(Constants.facebook_pic_big, f.getProfilePictureBigURL());
+						obj.put(Constants.facebook_uid, f.getUID());
+						jsonFriends.put(obj);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+		} else {
+			try {
+	 			JSONObject obj = new JSONObject();
+				obj.put(Constants.facebook_name, friend.getName());
+				obj.put(Constants.local_contactID, friend.getContactID());
+				obj.put(Constants.facebook_pic_big, friend.getProfilePictureBigURL());
+				obj.put(Constants.facebook_uid, friend.getUID());
+				jsonFriends.put(obj);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
+
 		if(jsonFriends.length() < 1){
 			Tools.showError(getString(R.string.no_friend_selected), FriendList.this);
 			return;
@@ -408,14 +418,15 @@ public class FriendList extends TrackedActivity {
 			Builder b = new Builder(context);
 			b.setTitle(friend.getName());
 			String[] items;
-			if (TextUtils.isEmpty(friend.getContactID())) {
+			if (friend.isMatchedWithContact()) {
 				items = new String[] {
-						context.getString(R.string.link_friend_text)
+						context.getString(R.string.link_friend_text),
+						context.getString(R.string.unlink_friend_text),
+						context.getString(R.string.sync_this_friend)
 						};
 			} else {
 				items = new String[] {
-						context.getString(R.string.link_friend_text),
-						context.getString(R.string.unlink_friend_text)
+						context.getString(R.string.link_friend_text)
 						};
 			}
 			b.setItems(items, new DialogInterface.OnClickListener() {
@@ -433,6 +444,9 @@ public class FriendList extends TrackedActivity {
 						EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
 						friend.unlink();
 						friendListAdapter.notifyDataSetChanged(); // should only update one post...
+						return;
+					case 2:
+						startSyncingActivity(friend);
 						return;
 					default:
 						throw new IllegalStateException("illegal item selected");
