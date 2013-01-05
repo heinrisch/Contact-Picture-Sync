@@ -14,13 +14,13 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,13 +31,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.facebook.android.Facebook;
 import com.google.android.apps.analytics.easytracking.EasyTracker;
@@ -45,9 +43,8 @@ import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 public class FriendList extends TrackedActivity {
 
+	@SuppressWarnings("deprecation")
 	Facebook facebook = new Facebook(Constants.facebook_appID);
-
-	Dialog dialog;
 
 	ArrayList<Friend> friends;
 
@@ -56,6 +53,7 @@ public class FriendList extends TrackedActivity {
 
 	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,12 +67,6 @@ public class FriendList extends TrackedActivity {
 		if(expires != 0) facebook.setAccessExpires(expires);
 
 		friends = new ArrayList<Friend>();
-
-		//Show dialog to distract user while downloading friends
-		dialog = new ProgressDialog(this);
-		dialog.setCancelable(false);
-		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
-		dialog.show();
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
 		friendListView.setOnItemClickListener(new FriendClicker());
@@ -103,7 +95,6 @@ public class FriendList extends TrackedActivity {
 			EasyTracker.getTracker().trackPageView("/optionUnlinkAll");
 			return true;
 		case R.id.menu_smartmatch:
-			dialog.show();
 			matchContactToFriends_async(false);
 			EasyTracker.getTracker().trackPageView("/optionSmartMatch");
 			return true;
@@ -162,6 +153,7 @@ public class FriendList extends TrackedActivity {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void startSyncingActivity() {
 		JSONArray jsonFriends = new JSONArray();
 		for(Friend f : friends) {
@@ -213,10 +205,18 @@ public class FriendList extends TrackedActivity {
 
 	//Download friends and put them in cache
 	protected void downloadFacebookFriends_async() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
+		new AsyncTask<Void, Void, Void>() {
+			ProgressDialog d;
+			
+			protected void onPreExecute() {
+				d = new ProgressDialog(FriendList.this);
+				d.setMessage(FriendList.this.getString(R.string.downloading_friends_text));
+				d.show();
+			};
 
+			@SuppressWarnings("deprecation")
+			@Override
+			protected Void doInBackground(Void... args) {
 				//Get all friends with FQL
 				Bundle params = new Bundle();
 				params.putString("method", "fql.query");
@@ -238,12 +238,20 @@ public class FriendList extends TrackedActivity {
 						"Download Complete",  // Action
 						"Number of Friends", // Label
 						friends.size());
-
-				friendDownloadCompleteHandler.sendEmptyMessage(0);
+				return null;
 			}
+			
+			protected void onPostExecute(Void result) {
+				d.dismiss();
+				
+				friendListAdapter = new FriendListAdapter(FriendList.this, friends);
+				friendListView.setAdapter(friendListAdapter);
 
-
-		}).start();
+				//Fetch the progressbar so that it can be update
+				matchContactToFriends_async(true);
+			};
+			
+		}.execute((Void) null);
 	}
 
 
@@ -259,29 +267,10 @@ public class FriendList extends TrackedActivity {
 
 	}
 
-	protected Handler friendDownloadCompleteHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg){
-
-			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-			friendListView.setAdapter(friendListAdapter);
-
-			//Fetch the progressbar so that it can be update
-			matchContactToFriends_async(true);
-		}
-	};
-
 	protected Handler friendContactMappingCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			downloadProfilePictures_async();
-			friendListAdapter.notifyDataSetChanged();
-
-			try{
-				dialog.cancel();
-			}catch (IllegalArgumentException iae) {
-				iae.printStackTrace();
-			}
+			
 
 		}
 	};
@@ -353,16 +342,29 @@ public class FriendList extends TrackedActivity {
 	}
 
 	protected void matchContactToFriends_async(final boolean loadLinks) {
-		dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
-		new Thread(new Runnable() {
+		new AsyncTask<Void, Void, Void>() {
+			ProgressDialog d;
+			
+			protected void onPreExecute() {
+				d = new ProgressDialog(FriendList.this);
+				d.setMessage(FriendList.this.getString(R.string.getting_your_contacts_text));
+				d.show();
+			};
+
 			@Override
-			public void run() {
+			protected Void doInBackground(Void... args) {
 				ContactHandler.matchContactsToFriends(friends,FriendList.this);
 				if(loadLinks) loadAllFriendLinks();
-				friendContactMappingCompleteHandler.sendEmptyMessage(0);
+				return null;
 			}
-		}).start();
-
+			
+			protected void onPostExecute(Void result) {
+				d.dismiss();
+				
+				downloadProfilePictures_async();
+				friendListAdapter.notifyDataSetChanged();
+			};
+		}.execute((Void) null);
 	}
 
 
