@@ -25,5 +25,9 @@
         android:id="@+id/menu_recommend"
         android:showAsAction="withText"
         android:title="@string/menu_recommend_on_wall"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:showAsAction="withText"
+        android:title="@string/settings"/>
 
 </menu>

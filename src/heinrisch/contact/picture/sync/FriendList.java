@@ -12,13 +12,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,13 +29,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.facebook.android.Facebook;
 import com.google.android.apps.analytics.easytracking.EasyTracker;
@@ -42,9 +41,8 @@ import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 public class FriendList extends TrackedActivity {
 
+	@SuppressWarnings("deprecation")
 	Facebook facebook = new Facebook(Constants.facebook_appID);
-
-	Dialog dialog;
 
 	ArrayList<Friend> friends;
 
@@ -53,12 +51,10 @@ public class FriendList extends TrackedActivity {
 
 	public Friend activeFriend; //Used for callbacks from contactpicker (change this?)
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//Don't show title on older android versions (after version 10 we need to show it to enable the actionbar)
-		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
-
 		setContentView(R.layout.friend_list);
 
 		//Get facebook access info
@@ -69,12 +65,6 @@ public class FriendList extends TrackedActivity {
 		if(expires != 0) facebook.setAccessExpires(expires);
 
 		friends = new ArrayList<Friend>();
-
-		//Show dialog to distract user while downloading friends
-		dialog = new ProgressDialog(this);
-		dialog.setCancelable(false);
-		dialog.show();
-		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
 		friendListView.setOnItemClickListener(new FriendClicker());
@@ -103,12 +93,11 @@ public class FriendList extends TrackedActivity {
 			EasyTracker.getTracker().trackPageView("/optionUnlinkAll");
 			return true;
 		case R.id.menu_smartmatch:
-			dialog.show();
 			matchContactToFriends_async(false);
 			EasyTracker.getTracker().trackPageView("/optionSmartMatch");
 			return true;
 		case R.id.menu_syncpictures:
-			startSyncingActivity();
+			startSyncingActivity(null);
 			EasyTracker.getTracker().trackPageView("/optionSyncPictures");
 			return true;
 		case R.id.menu_savelinks:
@@ -122,6 +111,9 @@ public class FriendList extends TrackedActivity {
 			return true;
 		case R.id.menu_recommend:
 			Tools.advertiseOnFacebookWall(facebook, this);
+			return true;
+		case R.id.menu_settings:
+			startActivity(new Intent(this, Settings.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -142,42 +134,55 @@ public class FriendList extends TrackedActivity {
 	}
 
 	public void showSaveDialogAndSync() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(getString(R.string.save_friends_before_sync_question))
-		.setCancelable(false)
-		.setPositiveButton(getString(R.string.yes_text), new DialogInterface.OnClickListener() {
+		Builder b = new Builder(this);
+		b.setMessage(getString(R.string.save_friends_before_sync_question));
+		b.setCancelable(false);
+		b.setPositiveButton(R.string.yes_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialogIn, int id) {
 				saveAllFriendLinks();
-				startSyncingActivity();
-				dialogIn.cancel();
-			}
-		})
-		.setNegativeButton(getString(R.string.no_text), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialogIn, int id) {
-				startSyncingActivity();
-				dialogIn.cancel();
+				startSyncingActivity(null);
 			}
 		});
-		builder.create().show();
+		b.setNegativeButton(R.string.no_text, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialogIn, int id) {
+				startSyncingActivity(null);
+			}
+		});
+		b.show();
 
 	}
 
-	protected void startSyncingActivity() {
+	@SuppressWarnings("deprecation")
+	protected void startSyncingActivity(Friend friend) {
 		JSONArray jsonFriends = new JSONArray();
-		for(Friend f : friends) {
-			if(f.isMatchedWithContact()){
-				try {
-					JSONObject obj = new JSONObject();
-					obj.put(Constants.facebook_name,f.getName());
-					obj.put(Constants.local_contactID,f.getContactID());
-					obj.put(Constants.facebook_pic_big,f.getProfilePictureBigURL());
-					obj.put(Constants.facebook_uid, f.getUID());
-					jsonFriends.put(obj);
-				} catch (JSONException e) {
-					e.printStackTrace();
+		if (friend == null) {
+			for(Friend f : friends) {
+				if(f.isMatchedWithContact()){
+					try {
+						JSONObject obj = new JSONObject();
+						obj.put(Constants.facebook_name, f.getName());
+						obj.put(Constants.local_contactID, f.getContactID());
+						obj.put(Constants.facebook_pic_big, f.getProfilePictureBigURL());
+						obj.put(Constants.facebook_uid, f.getUID());
+						jsonFriends.put(obj);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+		} else {
+			try {
+	 			JSONObject obj = new JSONObject();
+				obj.put(Constants.facebook_name, friend.getName());
+				obj.put(Constants.local_contactID, friend.getContactID());
+				obj.put(Constants.facebook_pic_big, friend.getProfilePictureBigURL());
+				obj.put(Constants.facebook_uid, friend.getUID());
+				jsonFriends.put(obj);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
+
 		if(jsonFriends.length() < 1){
 			Tools.showError(getString(R.string.no_friend_selected), FriendList.this);
 			return;
@@ -213,10 +218,18 @@ public class FriendList extends TrackedActivity {
 
 	//Download friends and put them in cache
 	protected void downloadFacebookFriends_async() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
+		new AsyncTask<Void, Void, Void>() {
+			ProgressDialog d;
+			
+			protected void onPreExecute() {
+				d = new ProgressDialog(FriendList.this);
+				d.setMessage(FriendList.this.getString(R.string.downloading_friends_text));
+				d.show();
+			};
 
+			@SuppressWarnings("deprecation")
+			@Override
+			protected Void doInBackground(Void... args) {
 				//Get all friends with FQL
 				Bundle params = new Bundle();
 				params.putString("method", "fql.query");
@@ -238,12 +251,20 @@ public class FriendList extends TrackedActivity {
 						"Download Complete",  // Action
 						"Number of Friends", // Label
 						friends.size());
-
-				friendDownloadCompleteHandler.sendEmptyMessage(0);
+				return null;
 			}
+			
+			protected void onPostExecute(Void result) {
+				d.dismiss();
+				
+				friendListAdapter = new FriendListAdapter(FriendList.this, friends);
+				friendListView.setAdapter(friendListAdapter);
 
-
-		}).start();
+				//Fetch the progressbar so that it can be update
+				matchContactToFriends_async(true);
+			};
+			
+		}.execute((Void) null);
 	}
 
 
@@ -259,29 +280,10 @@ public class FriendList extends TrackedActivity {
 
 	}
 
-	protected Handler friendDownloadCompleteHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg){
-
-			friendListAdapter = new FriendListAdapter(FriendList.this, friends);
-			friendListView.setAdapter(friendListAdapter);
-
-			//Fetch the progressbar so that it can be update
-			matchContactToFriends_async(true);
-		}
-	};
-
 	protected Handler friendContactMappingCompleteHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg){
-			downloadProfilePictures_async();
-			friendListAdapter.notifyDataSetChanged();
-
-			try{
-				dialog.cancel();
-			}catch (IllegalArgumentException iae) {
-				iae.printStackTrace();
-			}
+			
 
 		}
 	};
@@ -353,16 +355,29 @@ public class FriendList extends TrackedActivity {
 	}
 
 	protected void matchContactToFriends_async(final boolean loadLinks) {
-		dialog.setContentView(R.layout.custom_progress_dialog_getting_contacts);
-		new Thread(new Runnable() {
+		new AsyncTask<Void, Void, Void>() {
+			ProgressDialog d;
+			
+			protected void onPreExecute() {
+				d = new ProgressDialog(FriendList.this);
+				d.setMessage(FriendList.this.getString(R.string.getting_your_contacts_text));
+				d.show();
+			};
+
 			@Override
-			public void run() {
+			protected Void doInBackground(Void... args) {
 				ContactHandler.matchContactsToFriends(friends,FriendList.this);
 				if(loadLinks) loadAllFriendLinks();
-				friendContactMappingCompleteHandler.sendEmptyMessage(0);
+				return null;
 			}
-		}).start();
-
+			
+			protected void onPostExecute(Void result) {
+				d.dismiss();
+				
+				downloadProfilePictures_async();
+				friendListAdapter.notifyDataSetChanged();
+			};
+		}.execute((Void) null);
 	}
 
 
@@ -400,48 +415,48 @@ public class FriendList extends TrackedActivity {
 
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View v, int position, long id){
+			Context context= FriendList.this;
 			final Friend friend = friends.get(position);
-
-			final Dialog dia = new Dialog(FriendList.this);
-
-			dia.setContentView(R.layout.friend_click);
-			dia.setTitle(friend.getName());
-
-			TextView linkFriend = (TextView) dia.findViewById(R.id.link_friend);
-			TextView unlinkFriend = (TextView) dia.findViewById(R.id.unlink_friend);
-
-			/*ImageView imageView = (ImageView) dialog.findViewById(R.id.friend_click_image);
-			if(friend.hasDownloadedProfilePicture()) imageView.setImageBitmap(friend.getProfilePicture());
-			else imageView.setImageResource(R.drawable.mr_unknown);*/
-
-			unlinkFriend.setOnClickListener(new OnClickListener() {
-
+			
+			Builder b = new Builder(context);
+			b.setTitle(friend.getName());
+			String[] items;
+			if (friend.isMatchedWithContact()) {
+				items = new String[] {
+						context.getString(R.string.link_friend_text),
+						context.getString(R.string.unlink_friend_text),
+						context.getString(R.string.sync_this_friend)
+						};
+			} else {
+				items = new String[] {
+						context.getString(R.string.link_friend_text)
+						};
+			}
+			b.setItems(items, new DialogInterface.OnClickListener() {
 				@Override
-				public void onClick(View v) {
-					EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
-					friend.unlink();
-					friendListAdapter.notifyDataSetChanged(); //should only update one post...
-					dia.cancel();
+				public void onClick(DialogInterface dialog, int which) {
+					switch (which) {
+					case 0:
+						EasyTracker.getTracker().trackPageView("/buttonLinkFriend");
+						activeFriend = friend; // save for callback
+						Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
+						contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
+						return;
+					case 1:
+						EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
+						friend.unlink();
+						friendListAdapter.notifyDataSetChanged(); // should only update one post...
+						return;
+					case 2:
+						startSyncingActivity(friend);
+						return;
+					default:
+						throw new IllegalStateException("illegal item selected");
+					}
 				}
 			});
-
-			linkFriend.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					EasyTracker.getTracker().trackPageView("/buttonLinkFriend");
-					activeFriend = friend; //Save for callback
-					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
-					contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
-					dia.cancel();
-				}
-			});
-
-
-
-			dia.show();
+			b.show();
 		}
-
 	}
-
 }

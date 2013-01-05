@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     android:orientation="horizontal"
     android:paddingBottom="2dp"
     android:paddingTop="2dp" >
@@ -11,18 +10,30 @@
         android:id="@+id/profile_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:contentDescription="@string/profile_picture_description"
-        android:paddingRight="3dp"
+        android:src="@drawable/mr_unknown" />
+
+    <ImageView
+        android:id="@+id/contact_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/profile_picture_description"
         android:src="@drawable/mr_unknown" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_toLeftOf="@id/contact_picture"
+        android:layout_toRightOf="@id/profile_picture"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/real_life_name"
@@ -38,22 +49,4 @@
             android:text="@string/friend_contact_no_match_found" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="right"
-        android:orientation="vertical"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp" >
-
-        <ImageView
-            android:id="@+id/contact_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/profile_picture_description"
-            android:paddingRight="3dp"
-            android:src="@drawable/mr_unknown" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
