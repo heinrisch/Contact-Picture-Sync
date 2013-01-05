@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="11" />
+        android:targetSdkVersion="17" />
 
     <supports-screens
         android:largeScreens="true"
@@ -20,8 +20,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Light" >
         <activity
             android:name=".Main"
             android:label="@string/app_name"
@@ -34,9 +36,7 @@
         </activity>
         <activity
             android:name=".FriendList"
-            android:configChanges="keyboardHidden|orientation"
-            android:theme="@android:style/Theme.Holo.Light"
-             />
+            android:configChanges="keyboardHidden|orientation" />
         <activity
             android:name=".PictureSync"
             android:configChanges="keyboardHidden|orientation" />

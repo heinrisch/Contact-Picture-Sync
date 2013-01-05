@@ -25,6 +25,10 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
 public class Tools {
+	private Tools() {
+		// hide Constructor
+	}
+	
 	public static Bitmap downloadBitmap(String url) {      
 		Bitmap bitmap = null;     
 		try {
