@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="@color/white" >
-
-    <ListView
-        android:id="@+id/friend_list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:fastScrollEnabled="true"
-        android:smoothScrollbar="false"
-        style="@style/ListViewStyle"
-        android:layout_above="@+id/sync_image" />
+    android:layout_height="fill_parent" >
 
     <ImageButton
         android:id="@+id/sync_image"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/sync"
-        android:contentDescription="@string/sync_description"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent" />
+        android:contentDescription="@string/sync_description"
+        android:src="@drawable/sync" />
 
+    <ListView
+        android:id="@+id/friend_list"
+        style="@style/ListViewStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/sync_image"
+        android:fastScrollEnabled="true"
+        android:smoothScrollbar="false" />
 
 </RelativeLayout>

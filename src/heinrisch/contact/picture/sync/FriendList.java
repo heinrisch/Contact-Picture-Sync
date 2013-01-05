@@ -13,8 +13,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract.Contacts;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,9 +59,6 @@ public class FriendList extends TrackedActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//Don't show title on older android versions (after version 10 we need to show it to enable the actionbar)
-		if(android.os.Build.VERSION.SDK_INT < 11) requestWindowFeature(Window.FEATURE_NO_TITLE); 
-
 		setContentView(R.layout.friend_list);
 
 		//Get facebook access info
@@ -73,8 +73,8 @@ public class FriendList extends TrackedActivity {
 		//Show dialog to distract user while downloading friends
 		dialog = new ProgressDialog(this);
 		dialog.setCancelable(false);
-		dialog.show();
 		dialog.setContentView(R.layout.custom_progress_dialog_downloading_friends);
+		dialog.show();
 
 		friendListView = (ListView) findViewById(R.id.friend_list);
 		friendListView.setOnItemClickListener(new FriendClicker());
@@ -400,48 +400,44 @@ public class FriendList extends TrackedActivity {
 
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View v, int position, long id){
+			Context context= FriendList.this;
 			final Friend friend = friends.get(position);
-
-			final Dialog dia = new Dialog(FriendList.this);
-
-			dia.setContentView(R.layout.friend_click);
-			dia.setTitle(friend.getName());
-
-			TextView linkFriend = (TextView) dia.findViewById(R.id.link_friend);
-			TextView unlinkFriend = (TextView) dia.findViewById(R.id.unlink_friend);
-
-			/*ImageView imageView = (ImageView) dialog.findViewById(R.id.friend_click_image);
-			if(friend.hasDownloadedProfilePicture()) imageView.setImageBitmap(friend.getProfilePicture());
-			else imageView.setImageResource(R.drawable.mr_unknown);*/
-
-			unlinkFriend.setOnClickListener(new OnClickListener() {
-
+			
+			Builder b = new Builder(context);
+			b.setTitle(friend.getName());
+			String[] items;
+			if (TextUtils.isEmpty(friend.getContactID())) {
+				items = new String[] {
+						context.getString(R.string.link_friend_text)
+						};
+			} else {
+				items = new String[] {
+						context.getString(R.string.link_friend_text),
+						context.getString(R.string.unlink_friend_text)
+						};
+			}
+			b.setItems(items, new DialogInterface.OnClickListener() {
 				@Override
-				public void onClick(View v) {
-					EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
-					friend.unlink();
-					friendListAdapter.notifyDataSetChanged(); //should only update one post...
-					dia.cancel();
+				public void onClick(DialogInterface dialog, int which) {
+					switch (which) {
+					case 0:
+						EasyTracker.getTracker().trackPageView("/buttonLinkFriend");
+						activeFriend = friend; // save for callback
+						Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
+						contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
+						return;
+					case 1:
+						EasyTracker.getTracker().trackPageView("/buttonUnlinkFriend");
+						friend.unlink();
+						friendListAdapter.notifyDataSetChanged(); // should only update one post...
+						return;
+					default:
+						throw new IllegalStateException("illegal item selected");
+					}
 				}
 			});
-
-			linkFriend.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					EasyTracker.getTracker().trackPageView("/buttonLinkFriend");
-					activeFriend = friend; //Save for callback
-					Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);  
-					contactPickerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivityForResult(contactPickerIntent, Constants.activity_result_CONTACT_PICKER_RESULT); 
-					dia.cancel();
-				}
-			});
-
-
-
-			dia.show();
+			b.show();
 		}
-
 	}
-
 }

@@ -25,7 +25,6 @@ public class Main extends TrackedActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 
 		BugSenseHandler.setup(this, Constants.bugsense_appID);

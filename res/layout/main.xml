@@ -1,82 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:gravity="center_vertical" >
-    
-    <ImageButton
-        android:id="@+id/login_button"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_button"
-        android:contentDescription="@string/login_button_description"
-        android:src="@drawable/login"
-        android:background="@android:color/transparent"
-        android:padding="10sp" />
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="8dp" >
 
-    <!-- Help text -->
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListText"
-        android:text="@string/help_header_header_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp"
-        android:paddingTop="3sp" />
-    
-    <!-- Step 1 -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListText"
-        android:text="@string/help_step1_header_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp"
-        android:paddingTop="3sp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListTextSmaller"
-        android:text="@string/help_step1_body_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp" />
-    
-     <!-- Step 2 -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListText"
-        android:text="@string/help_step2_header_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp"
-        android:paddingTop="3sp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListTextSmaller"
-        android:text="@string/help_step2_body_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp" />
-    
-    
-     <!-- Step 3 -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListText"
-        android:text="@string/help_step3_header_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp"
-        android:paddingTop="3sp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/FriendListTextSmaller"
-        android:text="@string/help_step3_body_text"
-        android:paddingLeft="5sp"
-        android:paddingRight="5sp" />
+        <ImageButton
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/login_button_description"
+            android:src="@drawable/login"
+            android:text="@string/login_button" />
 
-</LinearLayout>
+        <!-- Help text -->
+        <!-- Header -->
+
+        <TextView
+            style="@style/FriendListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/help_header_header_text" />
+
+        <!-- Step 1 -->
+
+        <TextView
+            style="@style/FriendListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/help_step1_header_text" />
+
+        <TextView
+            style="@style/FriendListTextSmaller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_step1_body_text" />
+
+        <!-- Step 2 -->
+
+        <TextView
+            style="@style/FriendListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/help_step2_header_text" />
+
+        <TextView
+            style="@style/FriendListTextSmaller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_step2_body_text" />
+
+        <!-- Step 3 -->
+
+        <TextView
+            style="@style/FriendListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/help_step3_header_text" />
+
+        <TextView
+            style="@style/FriendListTextSmaller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/help_step3_body_text" />
+    </LinearLayout>
+
+</ScrollView>
