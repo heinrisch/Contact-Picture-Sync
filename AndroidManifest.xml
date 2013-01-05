@@ -40,6 +40,9 @@
         <activity
             android:name=".PictureSync"
             android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".Settings"
+            android:theme="@style/Theme" />
     </application>
 
 </manifest>

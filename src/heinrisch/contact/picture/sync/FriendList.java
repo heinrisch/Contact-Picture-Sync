@@ -112,6 +112,9 @@ public class FriendList extends TrackedActivity {
 		case R.id.menu_recommend:
 			Tools.advertiseOnFacebookWall(facebook, this);
 			return true;
+		case R.id.menu_settings:
+			startActivity(new Intent(this, Settings.class));
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

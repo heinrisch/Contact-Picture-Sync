@@ -40,5 +40,9 @@
     <string name="play_store_link" translatable="false">https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync</string>
     <string name="play_store_image" translatable="false">https://lh4.ggpht.com/lYoM6LIZDsmIHAAxaHuO5D_CIcXTeluVCUHXKRtQNa2jaC_rpewCgudnqe2UJsJZgls=w124</string>
     <string name="menu_recommend_on_wall">Recommend this App</string>
+    <string name="settings">Settings</string>
+    <string name="use_profile_piucture">Use profile picture</string>
+    <string name="use_profile_piucture_on">Just sync the profile picture</string>
+    <string name="use_profile_piucture_off">Try to find a larger picture</string>
 
 </resources>
