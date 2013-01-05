@@ -36,21 +36,23 @@ public class Main extends TrackedActivity {
 
 		if(access_token != null) facebook.setAccessToken(access_token);
 		if(expires != 0) facebook.setAccessExpires(expires);
-
-		ImageButton login = (ImageButton) findViewById(R.id.login_button);
-		login.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if(facebook.isSessionValid()){
-					launchFriendList();
-				}else{
-					authorizeWithFacebook();
-				}
-
-			}
-		});
 		
+		if (facebook.isSessionValid()) {
+			launchFriendList();
+			finish();
+		} else {
+			ImageButton login = (ImageButton) findViewById(R.id.login_button);
+			login.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(facebook.isSessionValid()){
+						launchFriendList();
+					} else{
+						authorizeWithFacebook();
+					}
+				}
+			});
+		}
 	}
 
 	protected void authorizeWithFacebook() {
