@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +98,7 @@ public class FriendList extends TrackedActivity {
 			EasyTracker.getTracker().trackPageView("/optionSmartMatch");
 			return true;
 		case R.id.menu_syncpictures:
-			startSyncingActivity(null);
+			startSyncingActivity(friends);
 			EasyTracker.getTracker().trackPageView("/optionSyncPictures");
 			return true;
 		case R.id.menu_savelinks:
@@ -140,12 +141,12 @@ public class FriendList extends TrackedActivity {
 		b.setPositiveButton(R.string.yes_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialogIn, int id) {
 				saveAllFriendLinks();
-				startSyncingActivity(null);
+				startSyncingActivity(friends);
 			}
 		});
 		b.setNegativeButton(R.string.no_text, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialogIn, int id) {
-				startSyncingActivity(null);
+				startSyncingActivity(friends);
 			}
 		});
 		b.show();
@@ -153,40 +154,27 @@ public class FriendList extends TrackedActivity {
 	}
 
 	@SuppressWarnings("deprecation")
-	protected void startSyncingActivity(Friend friend) {
+	protected void startSyncingActivity(List<Friend> syncFriends) {
 		JSONArray jsonFriends = new JSONArray();
-		if (friend == null) {
-			for(Friend f : friends) {
-				if(f.isMatchedWithContact()){
-					try {
-						JSONObject obj = new JSONObject();
-						obj.put(Constants.facebook_name, f.getName());
-						obj.put(Constants.local_contactID, f.getContactID());
-						obj.put(Constants.facebook_pic_big, f.getProfilePictureBigURL());
-						obj.put(Constants.facebook_uid, f.getUID());
-						jsonFriends.put(obj);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else {
-			try {
-	 			JSONObject obj = new JSONObject();
-				obj.put(Constants.facebook_name, friend.getName());
-				obj.put(Constants.local_contactID, friend.getContactID());
-				obj.put(Constants.facebook_pic_big, friend.getProfilePictureBigURL());
-				obj.put(Constants.facebook_uid, friend.getUID());
-				jsonFriends.put(obj);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
+    for (Friend f : syncFriends) {
+      if (f.isMatchedWithContact()) {
+        try {
+          JSONObject obj = new JSONObject();
+          obj.put(Constants.facebook_name, f.getName());
+          obj.put(Constants.local_contactID, f.getContactID());
+          obj.put(Constants.facebook_pic_big, f.getProfilePictureBigURL());
+          obj.put(Constants.facebook_uid, f.getUID());
+          jsonFriends.put(obj);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+      }
+    }
 
-		if(jsonFriends.length() < 1){
-			Tools.showError(getString(R.string.no_friend_selected), FriendList.this);
-			return;
-		}
+    if (jsonFriends.length() < 1) {
+      Tools.showError(getString(R.string.no_friend_selected), FriendList.this);
+      return;
+    }
 
 		Intent i = new Intent(FriendList.this,PictureSync.class);
 		i.putExtra(Constants.bundle_JSONFriends, jsonFriends.toString());
@@ -449,7 +437,7 @@ public class FriendList extends TrackedActivity {
 						friendListAdapter.notifyDataSetChanged(); // should only update one post...
 						return;
 					case 2:
-						startSyncingActivity(friend);
+						startSyncingActivity(new ArrayList<Friend>(){{add(friend);}});
 						return;
 					default:
 						throw new IllegalStateException("illegal item selected");
