@@ -103,7 +103,7 @@ public class Friend {
 	}
 	
 	public void savePictureHash(){
-		profilePictureSyncHash = profilePicture.hashCode();
+		profilePictureSyncHash = profilePicture != null ? profilePicture.hashCode() : 0;
 	}
 	
 	public boolean hasSyncedPicture(){
