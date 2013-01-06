@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager.BadTokenException;
 import android.widget.ImageView;
@@ -80,16 +81,22 @@ public class PictureSync extends TrackedActivity{
 
 			@Override
 			public void run() {
+				boolean useProfilePic = PreferenceManager
+						.getDefaultSharedPreferences(PictureSync.this)
+						.getBoolean("use_profile_pic", false);
+
 				for(SyncObject soh : syncObjects){
 					if(soh.url == null || soh.url.equals("")) continue;
 
-					//try to find larger picture
-					String largeURL = getLargeProfilePictureURL(soh.uid);
+					lastPicture = null;
 
-					if(largeURL != null)
-						lastPicture = Tools.downloadBitmap(largeURL);
+					if (!useProfilePic) { // try to find larger picture
+						String largeURL = getLargeProfilePictureURL(soh.uid);
+						if(largeURL != null)
+							lastPicture = Tools.downloadBitmap(largeURL);
+					}
 
-					if(largeURL == null || lastPicture == null)
+					if(lastPicture == null)
 						lastPicture = Tools.downloadBitmap(soh.url);
 
 					lastName = soh.name;

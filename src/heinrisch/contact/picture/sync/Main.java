@@ -25,7 +25,6 @@ public class Main extends TrackedActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 
 		BugSenseHandler.setup(this, Constants.bugsense_appID);
@@ -37,21 +36,23 @@ public class Main extends TrackedActivity {
 
 		if(access_token != null) facebook.setAccessToken(access_token);
 		if(expires != 0) facebook.setAccessExpires(expires);
-
-		ImageButton login = (ImageButton) findViewById(R.id.login_button);
-		login.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if(facebook.isSessionValid()){
-					launchFriendList();
-				}else{
-					authorizeWithFacebook();
-				}
-
-			}
-		});
 		
+		if (facebook.isSessionValid()) {
+			launchFriendList();
+			finish();
+		} else {
+			ImageButton login = (ImageButton) findViewById(R.id.login_button);
+			login.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(facebook.isSessionValid()){
+						launchFriendList();
+					} else{
+						authorizeWithFacebook();
+					}
+				}
+			});
+		}
 	}
 
 	protected void authorizeWithFacebook() {
