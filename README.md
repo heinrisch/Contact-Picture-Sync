@@ -1,8 +1,13 @@
-You need the facebook SDK [1] to build this app.
-Make sure libs/android-support-v4.jar is the same jar as in facbook's sdk.
+Contact picture sync
+==
+A simple Android application to sync facebook profile pictures with the default contact book in Android.
 
-[1] https://github.com/facebook/facebook-android-sdk
+Available for download from [Google Play]{https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync}
 
+Contributors
+==
+Creator:
+Henrik Sandström [heinrisch]{https://github.com/heinrisch}
 
-##Contributers
+Sync profile picture and various improvements:
 Felix Bechstein [felixb]{https://github.com/felixb}
