@@ -17,3 +17,10 @@ local.properties
 
 #ignore lint?
 lint.xml
+
+#intellij
+.idea/
+*.imp
+*.iml
+
+*.DS_Store
