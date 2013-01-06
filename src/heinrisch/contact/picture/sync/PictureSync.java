@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
+import android.content.SharedPreferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,9 +82,9 @@ public class PictureSync extends TrackedActivity{
 
 			@Override
 			public void run() {
-				boolean useProfilePic = PreferenceManager
-						.getDefaultSharedPreferences(PictureSync.this)
-						.getBoolean("use_profile_pic", false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(PictureSync.this);
+				final boolean useProfilePic = preferences.getBoolean("use_profile_pic", false);
+        final boolean cropPictures = preferences.getBoolean("crop_pictures", true);
 
 				for(SyncObject soh : syncObjects){
 					if(soh.url == null || soh.url.equals("")) continue;
@@ -98,6 +99,9 @@ public class PictureSync extends TrackedActivity{
 
 					if(lastPicture == null)
 						lastPicture = Tools.downloadBitmap(soh.url);
+
+          if(cropPictures)
+            lastPicture = cropPictureToSquare(lastPicture);
 
 					lastName = soh.name;
 					updateProgressCounterHandler.sendEmptyMessage(0);
@@ -117,7 +121,24 @@ public class PictureSync extends TrackedActivity{
 
 	}
 
-	public String getLargeProfilePictureURL(String uid){
+  private Bitmap cropPictureToSquare(Bitmap lastPicture) {
+    int height = lastPicture.getHeight();
+    int width = lastPicture.getWidth();
+
+    if(height > width){
+      int upperSpace = (int) ((height-width)*0.3);
+      return Bitmap.createBitmap(lastPicture, 0, upperSpace, width, width);
+    }
+
+    if(width > height){
+      int sideSpace = (int) ((width-height)*0.5);
+      return Bitmap.createBitmap(lastPicture, sideSpace, 0, height, height);
+    }
+
+    return lastPicture;
+  }
+
+  public String getLargeProfilePictureURL(String uid){
 		Bundle params = new Bundle();
 		params.putString("method", "fql.query");
 		params.putString("query", 	"SELECT "+Constants.facebook_src_big+" FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner = "+uid+" AND type = 'profile')  limit 1");							

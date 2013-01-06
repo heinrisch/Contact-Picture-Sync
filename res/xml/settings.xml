@@ -8,4 +8,11 @@
         android:summaryOn="@string/use_profile_piucture_on"
         android:title="@string/use_profile_piucture" />
 
+    <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="crop_pictures"
+            android:summaryOff="@string/crop_piuctures_off"
+            android:summaryOn="@string/crop_piuctures_on"
+            android:title="@string/crop_piuctures" />
+
 </PreferenceScreen>

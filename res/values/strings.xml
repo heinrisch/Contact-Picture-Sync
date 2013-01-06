@@ -44,5 +44,8 @@
     <string name="use_profile_piucture">Use profile picture</string>
     <string name="use_profile_piucture_on">Just sync the profile picture</string>
     <string name="use_profile_piucture_off">Try to find a larger picture</string>
+    <string name="crop_piuctures">Crop pictures to Square</string>
+    <string name="crop_piuctures_on">All pictures will be cropped to squares</string>
+    <string name="crop_piuctures_off">Do not crop picture</string>
 
 </resources>
