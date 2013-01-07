@@ -100,7 +100,7 @@ public class PictureSync extends TrackedActivity{
 					if(lastPicture == null)
 						lastPicture = Tools.downloadBitmap(soh.url);
 
-          if(cropPictures)
+          if(lastPicture != null && cropPictures)
             lastPicture = cropPictureToSquare(lastPicture);
 
 					lastName = soh.name;
