@@ -2,12 +2,12 @@ Contact picture sync
 ==
 A simple Android application to sync facebook profile pictures with the default contact book in Android.
 
-Available for download from [Google Play]{https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync}
+Available for download from [Google Play](https://play.google.com/store/apps/details?id=heinrisch.contact.picture.sync)
 
 Contributors
 ==
 Creator:
-Henrik Sandström [heinrisch]{https://github.com/heinrisch}
+Henrik Sandström ([heinrisch](https://github.com/heinrisch))
 
 Sync profile picture and various improvements:
-Felix Bechstein [felixb]{https://github.com/felixb}
+Felix Bechstein ([felixb](https://github.com/felixb))
