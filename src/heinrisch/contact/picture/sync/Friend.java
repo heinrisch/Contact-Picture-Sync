@@ -58,7 +58,7 @@ public class Friend {
 
 	public void setProfilePic(Bitmap b) {
 		this.profilePicture = Bitmap.createScaledBitmap(b, Constants.size_Profile_Picture, Constants.size_Profile_Picture, true);
-
+		savePictureHash();
 	}
 
 	public boolean hasDownloadedProfilePicture() {
@@ -108,7 +108,7 @@ public class Friend {
 	
 	public boolean hasSyncedPicture(){
 		if(profilePicture == null) return false;
-		return profilePictureSyncHash == profilePicture.hashCode();
+		return profilePictureSyncHash == contactPicture.hashCode();
 	}
 	
 	public String getSaveSyncProfilePictureFileName(){
