@@ -1,3 +1,7 @@
+Deprecated
+==
+The facebook API is deprecated and the coding style in this project is out of style.
+
 Contact picture sync
 ==
 A simple Android application to sync facebook profile pictures with the default contact book in Android.
