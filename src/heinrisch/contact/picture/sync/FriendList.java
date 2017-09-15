@@ -186,16 +186,16 @@ public class FriendList extends TrackedActivity {
 	public void saveAllFriendLinks() {
 		for(Friend f : friends){
 			if(f.isMatchedWithContact()){
-				Tools.saveStringToFile(f.getContactID(), new File(getCacheDir(), f.getSaveContactIDFileName()));
+				Tools.saveStringToFile(f.getContactID(), new File(getFilesDir(), f.getSaveContactIDFileName()));
 			}else{
-				Tools.saveStringToFile("", new File(getCacheDir(), f.getSaveContactIDFileName()));
+				Tools.saveStringToFile("", new File(getFilesDir(), f.getSaveContactIDFileName()));
 			}
 		}
 	}
 
 	public void loadAllFriendLinks() {
 		for(Friend f : friends){
-			File file = new File(getCacheDir(), f.getSaveContactIDFileName());
+			File file = new File(getFilesDir(), f.getSaveContactIDFileName());
 			String ID = Tools.getStringFromFile(file);
 			if(ID == null || ID.equalsIgnoreCase("")) continue;
 			f.setContactID(ID);
